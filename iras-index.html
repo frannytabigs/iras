@@ -1,0 +1,292 @@
+<!doctype html>
+<html>
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; 
+        }
+        #map {
+            z-index: 1;
+        }
+        *{
+            scroll-behavior: smooth;
+        }
+
+    </style>
+  </head>
+
+  <body>
+
+ <a href="#construction"> <button  class="text-sm fixed bottom-7 right-10 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-full shadow-lg z-50">
+  Report Now
+</button></a>
+        <header class="sticky top-0 z-50 shadow-2xl bg-gray-800 text-white">
+            <div class="main-header-bar max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-3">
+                        <button onclick="hide_unhide('menu');" class="md:hidden p-1 rounded-md hover:bg-gray-700 transition">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                        <img class="rounded-full w-10 h-10 object-cover border-2 border-indigo-400" 
+                            src="https://placehold.co/40x40/4f46e5/ffffff?text=IR" 
+                            onerror="this.onerror=null; this.src='https://placehold.co/40x40/4f46e5/ffffff?text=IR';" 
+                            alt="Logo"/>
+                        <h1 class="text-2xl font-extrabold text-indigo-400 tracking-wider">IRAS</h1>
+                    </div>
+
+                    <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                        <a href="#construction" class="hover:text-indigo-400 transition">Home</a>
+                        <a href="#construction" class="hover:text-indigo-400 transition">Map</a>
+                        <a href="#" onclick="window.scrollTo({ top: 0});" class="text-indigo-400 font-bold border-b-2 border-indigo-400 pb-1">Dashboard</a>
+                        <a href="#construction"> <img class="rounded-full w-10 h-10 object-cover ml-4 border-2 border-gray-600" 
+                            src="https://cdn.myanimelist.net/images/characters/15/76730.jpg" 
+                            onerror="this.onerror=null; this.src='https://placehold.co/40x40/4f46e5/ffffff?text=U';" 
+                            alt="User Avatar"/> </a>
+                    </nav>
+
+                    <div class="md:hidden">
+                        <a href="#construction"> <img class="rounded-full w-10 h-10 object-cover border-2 border-gray-600" 
+                            src="https://cdn.myanimelist.net/images/characters/15/76730.jpg" 
+                            onerror="this.onerror=null; this.src='https://placehold.co/40x40/4f46e5/ffffff?text=U';" 
+                            alt="User Avatar"/></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="md:hidden bg-gray-700">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-6 hidden" id="menu">
+                    <a href="#construction" class="text-white hover:bg-gray-600 block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                    <a href="#construction" class="text-white hover:bg-gray-600 block px-3 py-2 rounded-md text-base font-medium">Map</a>
+                    <a href="#" onclick="window.scrollTo({ top: 0});" class="text-indigo-400 bg-gray-600 block px-3 py-2 rounded-md text-base font-medium">Dashboard</a>
+                </div>
+            </div>
+        </header>
+
+        <script>
+        function hide_unhide(id){
+            document.getElementById(id).classList.toggle('hidden');
+        }
+        </script>
+
+
+        <main id="dashboard" class="p-4 md:p-8 max-w-7xl mx-auto">
+
+            <div class="mb-8 p-6 bg-white rounded-xl shadow-lg border border-gray-100 flex flex-wrap gap-4 items-end justify-center">
+                
+                <div class="flex-1 min-w-[150px] max-w-full sm:max-w-[calc(33%-1rem)]">
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Location</label>
+                    <select class="w-full p-2.5 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 text-sm shadow-sm">
+                        <option>All Location</option>
+                        <option>Custom Location</option>
+                    </select>
+                </div>
+
+                <div class="flex-1 min-w-[150px] max-w-full sm:max-w-[calc(33%-1rem)]">
+                    <label class="block text-xs font-medium text-gray-500 mb-1">Date Range</label>
+                    <select class="w-full p-2.5 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 text-sm shadow-sm">
+                        <option>Last 7 Days</option>
+                        <option>Last 30 Days</option>
+                        <option>Last 365 Days</option>  
+                        <option>All Time</option>
+                        <option>Custom Date</option>
+                    </select>
+                </div>
+            </div>
+
+           
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <div class="md:col-span-2 lg:col-span-3 bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2 text-center">Map Incident</h2>
+                    <div id="map" class="h-[450px] w-full border border-gray-200 rounded-xl shadow-inner"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+                    <div id="line_chart" class="chart-container"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+                    <div id="pie_chart" class="chart-container"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+                    <div id="column_chart" class="chart-container"></div>
+                </div>
+
+            </div>
+
+             <div class="pt-8 mt-6 w-full bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+                    <h1 class="text-2xl font-bold text-gray-800 mb-4">Recent Incidents</h1> 
+                    <div class="space-y-4">
+                        <div class="p-4 bg-red-50 border-l-4 border-red-600 rounded-lg shadow-md cursor-pointer hover:bg-red-100 transition duration-150">
+                            <p class="text-base font-semibold text-gray-800">Theft reported at Main St. <span class="text-sm text-gray-500 font-normal">(15 mins ago)</span></p>
+                            <p class="text-xs text-red-600 font-bold mt-1">HIGH PRIORITY | UNRESOLVED</p>
+                        </div>
+                        <div class="p-4 bg-yellow-50 border-l-4 border-orange-500 rounded-lg shadow-md cursor-pointer hover:bg-yellow-100 transition duration-150">
+                            <p class="text-base font-semibold text-gray-800">Traffic Accident on Highway 101 <span class="text-sm text-gray-500 font-normal">(1 hour ago)</span></p>
+                            <p class="text-xs text-orange-600 font-bold mt-1">MEDIUM PRIORITY | RESOLVED</p>
+                        </div>
+                        <div class="p-4 bg-indigo-50 border-l-4 border-indigo-500 rounded-lg shadow-md cursor-pointer hover:bg-indigo-100 transition duration-150">
+                            <p class="text-base font-semibold text-gray-800">Suspicious Activity near Park <span class="text-sm text-gray-500 font-normal">(3 hours ago)</span></p>
+                            <p class="text-xs text-indigo-600 font-bold mt-1">LOW PRIORITY | UNDER INVESTIGATION</p>
+                        </div>
+                    </div>
+                </div>
+        </main>
+
+
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+        <script>
+
+            function initializeMap(mapId) {
+                var mapElement = document.getElementById(mapId);
+                var map = L.map(mapId).setView([10.3233, 123.9411], 14); 
+
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }).addTo(map);
+                
+                L.marker([10.3233, 123.9411]).addTo(map).bindPopup('Theft at Skwelahan ni Diana (High Priority)').openPopup();
+                L.marker([10.3462, 123.9603]).addTo(map).bindPopup('Traffic Accident at Tabigshet (Resolved)');
+                L.marker([10.3809, 123.9284]).addTo(map).bindPopup('Suspicious Activity (Under Investigation)');
+            }
+
+            initializeMap('map');
+
+        </script>
+
+        <script type="text/javascript">
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawCharts);
+
+            function drawCharts() {
+                
+                var pieData = google.visualization.arrayToDataTable([
+                    ['Incident Type', 'Number of Incidents'],
+                    ['Theft', 45],
+                    ['Assault', 30],
+                    ['Accident', 25],
+                    ['Robbery', 15],
+                    ['Fire', 5],
+                    ['Other', 10]
+                ]);
+
+                var pieOptions = {
+                    title: 'Incident Types Distribution',
+                    pieHole: 0.4,
+                    colors: ['#4f46e5', '#ef4444', '#f59e0b', '#10b981', '#a855f7', '#06b6d4'],
+                    legend: { position: 'right', alignment: 'center' }, 
+                    chartArea: {width: '80%', height: '75%'},
+                    fontName: 'Inter',
+                    titleTextStyle: { fontSize: 16 }
+                };
+
+                var pieChart = new google.visualization.PieChart(document.getElementById('pie_chart'));
+                pieChart.draw(pieData, pieOptions);
+
+                var columnData = google.visualization.arrayToDataTable([
+                    ['Day', 'Incidents'],
+                    ['Mon', 12],
+                    ['Tue', 20],
+                    ['Wed', 18],
+                    ['Thu', 25],
+                    ['Fri', 30],
+                    ['Sat', 15],
+                    ['Sun', 10]
+                ]);
+
+                var columnOptions = {
+                    title: 'Daily Incident Reports',
+                    legend: { position: 'none' },
+                    chartArea: {width: '90%', height: '75%'},
+                    hAxis: { title: 'Day of the Week' },
+                    vAxis: { title: 'Number of Reports', minValue: 0 },
+                    colors: ['#4f46e5'], 
+                    fontName: 'Inter',
+                    titleTextStyle: { fontSize: 16 }
+                };
+
+                var columnChart = new google.visualization.ColumnChart(document.getElementById('column_chart'));
+                columnChart.draw(columnData, columnOptions);
+
+                var lineData = google.visualization.arrayToDataTable([
+                    ['Month', 'Total Incidents'],
+                    ['Jan', 150],
+                    ['Feb', 180],
+                    ['Mar', 165],
+                    ['Apr', 210],
+                    ['May', 190],
+                    ['Jun', 230],
+                    ['Jul', 250],
+                    ['Aug', 220],
+                    ['Sep', 260],
+                    ['Oct', 280],
+                    ['Nov', 310],
+                    ['Dec', 350]
+                ]);
+
+                var lineOptions = {
+                    title: 'Monthly Incident Trend',
+                    legend: { position: 'none' },
+                    chartArea: {width: '90%', height: '75%'},
+                    hAxis: { title: 'Month' },
+                    vAxis: { title: 'Total Incidents', minValue: 0 },
+                    series: {
+                        0: { color: '#10b981' } 
+                    },
+                    fontName: 'Inter',
+                    titleTextStyle: { fontSize: 16 }
+                };
+
+                var lineChart = new google.visualization.LineChart(document.getElementById('line_chart'));
+                lineChart.draw(lineData, lineOptions);
+            }
+        </script>
+
+
+
+
+
+
+
+
+<div id="construction"
+        class="p-20 m-20 flex flex-col justify-center items-center p-8 max-w-7xl mx-auto text-center">
+        <svg class="w-24 h-24 text-indigo-500 mb-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M18.364 5.636l-3.536 3.536m3.536 3.536l-3.536-3.536m3.536-3.536l-3.536 3.536m3.536 3.536l-3.536-3.536M12 2v2m0 16v2m-6-6H4m16 0h-2m-6-6h-2m-2-2h-2m-2-2H4m16 4h-2m-2 2h-2m-2 2h-2m-2 2h-2M4 12h2m16 0h-2m-6-6h-2m-2-2h-2m-2-2H4m16 4h-2m-2 2h-2m-2 2h-2m-2 2h-2">
+            </path>
+        </svg>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">Under Construction!</h1>
+        <p id="construction-message" class="text-xl text-gray-600 max-w-lg"> We're still preparing some things just for you!
+            </p>
+        <a href="#"><button onclick="window.scrollTo({ top: 0});"
+            class="mt-8 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300">
+            Go Back to Dashboard
+        </button></a>
+    </div>
+  </body>
+</html>
