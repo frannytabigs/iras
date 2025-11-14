@@ -3,7 +3,16 @@
 
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+ <meta content='Incident Report and Awareness System' property='og:title' />
+      <meta content='A crowd sourced information of incidents in your area' property='og:description'  />
+     <meta content='/' property='og:url' />
+       <meta property='og:site_name' content='IRAS!'>
+      <meta content='https://cepinmorg-my.sharepoint.com/personal/office26068_copi_vip/Documents/Franny/icon.png' property='og:image' />
+      <meta content='#2f3136'  name='theme-color'/>
+
+
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +24,8 @@
         crossorigin=""/>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
+    <title>IRAS</title>
+    <link rel="icon" type="image/x-icon" href="https://cepinmorg-my.sharepoint.com/personal/office26068_copi_vip/Documents/Franny/icon.png">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -27,17 +37,43 @@
         *{
             scroll-behavior: smooth;
         }
+@supports not (--css-vars-supported: 0) {
+  body::before {
+    content: "<h1>Your browser may not fully support all functions required by this website. Please consider upgrading to a modern browser</h1>";
+    display: block;
+    background-color: #ffcccc;
+    color: #cc0000;
+    padding: 10px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 150%;
+    z-index: 9999;
+  }
+}
 
     </style>
   </head>
 
   <body>
 
- <a href="#construction"> <button  class="text-sm fixed bottom-7 right-10 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-full shadow-lg z-50">
+<noscript>
+  <h1>Your browser does not support JavaScript or it is currently disabled. It does not fully support all functions on this site. Please consider upgrading</h1>
+</noscript>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  if (!CSS.supports('backdrop-filter', 'blur(10px)')) {
+    const message = document.createElement('div');
+    message.innerHTML = '<h1>Your browser does not fully support all functions on this site. Please consider upgrading</h1>';
+    message.style.cssText = 'background-color: #ffcccc; color: #cc0000; padding: 10px; text-align: center; font-family: sans-serif; font-size: 150%;z-index: 9999;';
+    document.body.prepend(message);
+  }     
+});</script>
+ <a href="report"> <button  class="text-sm fixed bottom-5 right-5 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-full shadow-lg z-50">
   Report Now
 </button></a>
         <header class="sticky top-0 z-50 shadow-2xl bg-gray-800 text-white">
-            <div class="main-header-bar max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="main-header-bar max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> 
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center space-x-3">
                         <button onclick="hide_unhide('menu');" class="md:hidden p-1 rounded-md hover:bg-gray-700 transition">
@@ -45,27 +81,27 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         </button>
-                        <img class="rounded-full w-10 h-10 object-cover border-2 border-indigo-400" 
-                            src="https://placehold.co/40x40/4f46e5/ffffff?text=IR" 
+                        <img class="rounded-full w-10 h-10 object-cover" 
+                            src="https://cepinmorg-my.sharepoint.com/personal/office26068_copi_vip/Documents/Franny/icon.png" 
                             onerror="this.onerror=null; this.src='https://placehold.co/40x40/4f46e5/ffffff?text=IR';" 
                             alt="Logo"/>
                         <h1 class="text-2xl font-extrabold text-indigo-400 tracking-wider">IRAS</h1>
                     </div>
 
                     <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-                        <a href="#construction" class="hover:text-indigo-400 transition">Home</a>
-                        <a href="#construction" class="hover:text-indigo-400 transition">Map</a>
+                        <a href="./" class="hover:text-indigo-400 transition">Home</a>
+                        <a href="map" class="hover:text-indigo-400 transition">Map</a>
                         <a href="#" onclick="window.scrollTo({ top: 0});" class="text-indigo-400 font-bold border-b-2 border-indigo-400 pb-1">Dashboard</a>
-                        <a href="#construction"> <img class="rounded-full w-10 h-10 object-cover ml-4 border-2 border-gray-600" 
+                        <a href="user"> <img class="rounded-full w-10 h-10 object-cover ml-4 border-2 border-gray-600 hover:border-indigo-400 transition" 
                             src="https://cdn.myanimelist.net/images/characters/15/76730.jpg" 
-                            onerror="this.onerror=null; this.src='https://placehold.co/40x40/4f46e5/ffffff?text=U';" 
+                            onerror="this.onerror=null; this.src='https://placehold.co/40x40/4f46e5/ffffff?text=Account';" 
                             alt="User Avatar"/> </a>
                     </nav>
 
                     <div class="md:hidden">
-                        <a href="#construction"> <img class="rounded-full w-10 h-10 object-cover border-2 border-gray-600" 
+                        <a href="/user"> <img class="rounded-full w-10 h-10 object-cover border-2 border-gray-600 hover:border-indigo-400" 
                             src="https://cdn.myanimelist.net/images/characters/15/76730.jpg" 
-                            onerror="this.onerror=null; this.src='https://placehold.co/40x40/4f46e5/ffffff?text=U';" 
+                            onerror="this.onerror=null; this.src='https://placehold.co/40x40/4f46e5/ffffff?text=Account';" 
                             alt="User Avatar"/></a>
                     </div>
                 </div>
@@ -73,8 +109,8 @@
 
             <div class="md:hidden bg-gray-700">
                 <div class="px-2 pt-2 pb-3 space-y-1 sm:px-6 hidden" id="menu">
-                    <a href="#construction" class="text-white hover:bg-gray-600 block px-3 py-2 rounded-md text-base font-medium">Home</a>
-                    <a href="#construction" class="text-white hover:bg-gray-600 block px-3 py-2 rounded-md text-base font-medium">Map</a>
+                    <a href="./" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-indigo-400 transition">Home</a>
+                    <a href="map" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-indigo-400 transition">Map</a>
                     <a href="#" onclick="window.scrollTo({ top: 0});" class="text-indigo-400 bg-gray-600 block px-3 py-2 rounded-md text-base font-medium">Dashboard</a>
                 </div>
             </div>
@@ -88,69 +124,171 @@
 
 
         <main id="dashboard" class="p-4 md:p-8 max-w-7xl mx-auto">
-
-            <div class="mb-8 p-6 bg-white rounded-xl shadow-lg border border-gray-100 flex flex-wrap gap-4 items-end justify-center">
-                
-                <div class="flex-1 min-w-[150px] max-w-full sm:max-w-[calc(33%-1rem)]">
+        
+            <div id="filters" class="mx-auto w-fit flex-col mb-6 p-6 bg-white rounded-xl justify-center flex space-x-4 space-y-4 items-center">
+            <form class="space-y-4" method="get" action="?">
+                <div class="">
                     <label class="block text-xs font-medium text-gray-500 mb-1">Location</label>
-                    <select class="w-full p-2.5 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 text-sm shadow-sm">
+                    <select id="location-select" onchange="handleFilterChange('location')" class="w-70 p-2.5 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 text-sm shadow-sm">
                         <option>All Location</option>
                         <option>Custom Location</option>
                     </select>
-                </div>
 
-                <div class="flex-1 min-w-[150px] max-w-full sm:max-w-[calc(33%-1rem)]">
+                 <div id="custom-location-input" class="hidden">
+      <input id="customLocation" type="text"  placeholder="Enter location (e.g., Paknaan, Lacion)" 
+                          class="w-70 p-2.5 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 text-sm shadow-sm mt-2">
+             </div>
+                </div>
+             
+                <div class="">
                     <label class="block text-xs font-medium text-gray-500 mb-1">Date Range</label>
-                    <select class="w-full p-2.5 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 text-sm shadow-sm">
-                        <option>Last 7 Days</option>
-                        <option>Last 30 Days</option>
-                        <option>Last 365 Days</option>  
+                    <select name="date" id="date-select" onchange="handleFilterChange('date')" class="w-70 p-2.5 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 text-sm shadow-sm">
+                        <option>Last 7 Days</option>   
+                        <option>Today</option>
+                        <option>Last Month</option>
+                        <option>Last Year</option>  
                         <option>All Time</option>
                         <option>Custom Date</option>
                     </select>
-                </div>
-            </div>
+                   
+                    <div  id="custom-date-inputs" class="w-70 space-x-4 mt-2 hidden">
+                        
+                        <div class="">
+                            <label for="custom-start-date" class="block text-xs font-medium text-gray-500 mb-1">Start Date</label>
+                            <input id="startDate"  type="date"
+                                   class="w-70 p-2.5 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 text-sm shadow-sm"
+                                   >
+                        </div>
 
+                        <div class="">
+                            <label for="custom-end-date" class="block text-xs font-medium text-gray-500 mt-2 mb-1">End Date</label>
+                            <input type="date" id="endDate" 
+                                   class="w-70 p-2.5 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 text-sm shadow-sm"
+                                   >
+                        </div>
+                    
+            </div>
+                </div>
+   
+                 <div class="">
+                    <button
+                        type='submit' class="w-fit mx-auto bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 text-sm flex items-center justify-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                        Apply Filters
+                    </button>
+                </div>
+                </form>
+        </div>
+
+         
+<script>
+const urlParams = new URLSearchParams( window.location.search);
+const customLocation = urlParams.get('customLocation');
+const startDate = urlParams.get('startDate');
+const endDate = urlParams.get('endDate');
+const date = urlParams.get('date');
+const dateSelect = document.getElementById('date-select');
+const locationSelect = document.getElementById('location-select');
+const startDateElement = document.getElementById('startDate');
+const endDateElement = document.getElementById('endDate');
+const customLocationElement = document.getElementById('customLocation');
+
+if (customLocation){
+    locationSelect.insertBefore(new Option(customLocation, customLocation), locationSelect.firstChild);
+    locationSelect.value = customLocation;
+}
+if (date){
+    dateSelect.value = date;
+}
+
+if (startDate && endDate){
+    handleFilterChange("date");
+    startDateElement.required = true;
+    endDateElement.required = true;
+    startDateElement.name = "startDate";
+    endDateElement.name = "endDate";
+    startDateElement.value = startDate;
+    endDateElement.value = endDate;
+    startDateElement.blur();    
+}
+
+
+
+     function handleFilterChange(type) {
+                if (type === 'location') {
+                    var select = document.getElementById('location-select');
+                    var customInput = document.getElementById('custom-location-input');
+
+                    if (select.value === 'Custom Location') {
+                        customInput.classList.remove('hidden');
+                        customLocationElement.focus();
+                        customLocationElement.required = true;
+                        customLocationElement.name = "customLocation";
+                    } else {
+                        customInput.classList.add('hidden');
+                        customLocationElement.required = false;
+                        customLocationElement.name = "";                        
+                    }
+                } else if (type === 'date') {
+                    var select = document.getElementById('date-select');
+                    var customInput = document.getElementById('custom-date-inputs');
+
+                    if (select.value === 'Custom Date') {
+                        customInput.classList.remove('hidden');
+                        startDateElement.focus();
+                        startDateElement.required = true;
+                        endDateElement.required = true;
+                        startDateElement.name = "startDate";
+                        endDateElement.name = "endDate";
+                    } else {
+                        customInput.classList.add('hidden');
+                        startDateElement.required = false;
+                        endDateElement.required = false;
+                        startDateElement.name = "";
+                        endDateElement.name = "";
+                    }
+                }
+            }
+</script>
            
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                
-                <div class="md:col-span-2 lg:col-span-3 bg-white p-6 rounded-xl shadow-xl border border-gray-100">
-                    <h2 class="text-lg font-semibold text-gray-700 mb-2 text-center">Map Incident</h2>
-                    <div id="map" class="h-[450px] w-full border border-gray-200 rounded-xl shadow-inner"></div>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+                <div class="bg-white p-6 rounded-xl">
                     <div id="line_chart" class="chart-container"></div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+                <div class="bg-white p-6 rounded-xl">
                     <div id="pie_chart" class="chart-container"></div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl shadow-xl border border-gray-100">
+                <div class="bg-white p-6 rounded-xl">
                     <div id="column_chart" class="chart-container"></div>
                 </div>
-
+  <div class="md:col-span-2 lg:col-span-3 bg-white p-6 rounded-xl">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2 text-center">Map Incident</h2>
+                    <div id="map" class="h-[450px] w-full border border-gray-200 rounded-xl shadow-inner"></div>
+                </div>
             </div>
 
-             <div class="pt-8 mt-6 w-full bg-white p-6 rounded-xl shadow-xl border border-gray-100">
-                    <h1 class="text-2xl font-bold text-gray-800 mb-4">Recent Incidents</h1> 
-                    <div class="space-y-4">
-                        <div class="p-4 bg-red-50 border-l-4 border-red-600 rounded-lg shadow-md cursor-pointer hover:bg-red-100 transition duration-150">
-                            <p class="text-base font-semibold text-gray-800">Theft reported at Main St. <span class="text-sm text-gray-500 font-normal">(15 mins ago)</span></p>
-                            <p class="text-xs text-red-600 font-bold mt-1">HIGH PRIORITY | UNRESOLVED</p>
+             <div class="pt-8 mt-6 w-full bg-white p-6 rounded-xl">
+                    <h1 class="text-2xl font-bold text-gray-800 mb-4 mt-0 pt-0">Reported Incidents</h1> 
+                        <div class="p-4 border-l-4 border-indigo-500 rounded-lg shadow-md cursor-pointer hover:bg-indigo-100 transition duration-150">
+                            <p class="text-lg font-semibold text-gray-800">Theft <span class="text-sm text-gray-500 font-normal">(3 hours ago)</span></p>
+                            <p class="text-sm text-gray-700 mt-1">I saw someone running with a bag near the market entrance.</p>
+                            <img src="https://placehold.co/400x200/4f46e5/ffffff?text=Incident+Evidence" 
+                                onerror="this.onerror=null; this.src='https://placehold.co/400x200/4f46e5/ffffff?text=No+Image+Available';" 
+                                class="w-60 h-60 object-cover mt-3 mb-3 rounded-lg shadow-inner">
+                            <div class="flex items-center space-x-2 mt-2">
+                                <img src="https://cdn.myanimelist.net/images/characters/15/76730.jpg" 
+                                    onerror="this.onerror=null; this.src='https://placehold.co/20x20/ef4444/ffffff?text=User+Account';" 
+                                    class="rounded-full w-5 h-5 object-cover">
+                                <p class="text-xs text-indigo-600 font-bold">Reported by Franny</p>
+                            </div>
                         </div>
-                        <div class="p-4 bg-yellow-50 border-l-4 border-orange-500 rounded-lg shadow-md cursor-pointer hover:bg-yellow-100 transition duration-150">
-                            <p class="text-base font-semibold text-gray-800">Traffic Accident on Highway 101 <span class="text-sm text-gray-500 font-normal">(1 hour ago)</span></p>
-                            <p class="text-xs text-orange-600 font-bold mt-1">MEDIUM PRIORITY | RESOLVED</p>
-                        </div>
-                        <div class="p-4 bg-indigo-50 border-l-4 border-indigo-500 rounded-lg shadow-md cursor-pointer hover:bg-indigo-100 transition duration-150">
-                            <p class="text-base font-semibold text-gray-800">Suspicious Activity near Park <span class="text-sm text-gray-500 font-normal">(3 hours ago)</span></p>
-                            <p class="text-xs text-indigo-600 font-bold mt-1">LOW PRIORITY | UNDER INVESTIGATION</p>
-                        </div>
-                    </div>
-                </div>
+            </div>
+
+
+
         </main>
 
 
@@ -272,21 +410,5 @@
 
 
 
-<div id="construction"
-        class="p-20 m-20 flex flex-col justify-center items-center p-8 max-w-7xl mx-auto text-center">
-        <svg class="w-24 h-24 text-indigo-500 mb-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M18.364 5.636l-3.536 3.536m3.536 3.536l-3.536-3.536m3.536-3.536l-3.536 3.536m3.536 3.536l-3.536-3.536M12 2v2m0 16v2m-6-6H4m16 0h-2m-6-6h-2m-2-2h-2m-2-2H4m16 4h-2m-2 2h-2m-2 2h-2m-2 2h-2M4 12h2m16 0h-2m-6-6h-2m-2-2h-2m-2-2H4m16 4h-2m-2 2h-2m-2 2h-2m-2 2h-2">
-            </path>
-        </svg>
-        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">Under Construction!</h1>
-        <p id="construction-message" class="text-xl text-gray-600 max-w-lg"> We're still preparing some things just for you!
-            </p>
-        <a href="#"><button onclick="window.scrollTo({ top: 0});"
-            class="mt-8 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300">
-            Go Back to Dashboard
-        </button></a>
-    </div>
   </body>
 </html>
