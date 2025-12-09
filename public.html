@@ -1102,7 +1102,7 @@ function loadLineBarChart(incidents) {
         var dateObj = new Date(x, y - 1, 1);
         var yearstart = dateObj.toLocaleDateString('en-US', { year: 'numeric', month:'short' });
 
-        s = allMonthsFilled.at(-1); 
+        s = allMonthsFilled[allMonthsFilled.length - 1]; 
         var [x, y] = s.split('-');
         var dateObj = new Date(x, y - 1, 1);
         var yearend = dateObj.toLocaleDateString('en-US', { year: 'numeric', month:'short' });
@@ -1128,7 +1128,7 @@ function loadLineBarChart(incidents) {
         chart.draw(dataTable, options);
 
 
-        drawDailyBarChart(allMonthsFilled.at(-1), incidents);
+        drawDailyBarChart(allMonthsFilled[allMonthsFilled.length - 1], incidents);
 
         google.visualization.events.addListener(chart, 'select', function() {
             const selection = chart.getSelection();
@@ -1561,6 +1561,7 @@ function scrollToTop() {
 
     </body>
 </html>
+
 
 
 
