@@ -663,11 +663,97 @@ header a:hover{
 .statusdeleted {
     opacity:0.3;border-color:red;animation: flipY 10s linear infinite;
 }
-
+ @supports not (--css-vars-supported: 0) {
+  body::before {
+    content: "<h1>Your browser may not fully support all functions required by this website. Please consider upgrading to a modern browser</h1>";
+    display: block;
+    background-color: #ffcccc;
+    color: #cc0000;
+    padding: 10px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 150%;
+    z-index: 9999;
+  }
+}
 </style>
     </head>
 
     <body>
+        <noscript>
+  <h1>Your browser does not support JavaScript or it is currently disabled. It does not fully support all functions on this site. Please consider upgrading</h1>
+</noscript>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  if (!CSS.supports('backdrop-filter', 'blur(10px)')) {
+    const message = document.createElement('div');
+    message.innerHTML = '<h1>Your browser does not fully support all functions on this site. Please consider upgrading</h1>';
+    message.style.cssText = 'background-color: #ffcccc; color: #cc0000; padding: 10px; text-align: center; font-family: sans-serif; font-size: 15px;z-index: 9999;';
+    document.body.prepend(message);
+  }     
+});
+(function() {
+    var reasons = [];
+
+    if (!Array.prototype.at) reasons.push("Missing array features");
+    if (!window.fetch) reasons.push("Missing network features");
+    if (!window.Promise) reasons.push("Missing async features");
+
+    if (/iPhone OS ([0-9]|1[0-2])_/.test(navigator.userAgent)) {
+        reasons.push("iOS 12 (Outdated)");
+    }
+
+    if (reasons.length > 0) {
+        var warningDiv = document.createElement('div');
+        warningDiv.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff3cd;
+            color: #856404;
+            text-align: center;
+            padding: 15px 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            border-bottom: 1px solid #ffeeba;
+            z-index: 999999;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        `;
+
+        warningDiv.innerHTML = `
+            <span>
+                <strong>System Warning:</strong> Your browser is outdated. 
+                Some features may not work correctly.
+                <br>
+                <small style="opacity:0.8">Detected: ${reasons.join(", ")}</small>
+            </span>
+            <button onclick="this.parentElement.style.display='none'" style="
+                background: transparent;
+                border: 1px solid #856404;
+                color: #856404;
+                border-radius: 4px;
+                padding: 5px 10px;
+                margin-left: 15px;
+                cursor: pointer;
+                font-size: 12px;
+            ">Dismiss</button>
+        `;
+
+        document.body.appendChild(warningDiv);
+
+        var header = document.querySelector('header');
+        if(header) header.style.marginTop = "60px";
+    }
+})();
+</script>
+
    <div id="preloader">
         <div class="loader-content">
             <h2>Hello, User!</h2>
@@ -1487,3 +1573,4 @@ No data for now
 </script>
 </body>
 </html>
+
