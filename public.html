@@ -873,6 +873,19 @@ No data for now
         
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
+    function safeDate(timestamp) {
+    // If it's already a number (unix timestamp), return it as a Date
+    if (typeof timestamp === 'number') return new Date(timestamp);
+    
+    // If it's a string, fix the format for Safari
+    if (typeof timestamp === 'string') {
+        // Replace dashes with slashes (Safari likes 2025/10/21 better than 2025-10-21)
+        var safeStr = timestamp.replace(/-/g, "/");
+        return new Date(safeStr);
+    }
+    
+    return new Date(timestamp);
+}
 function drawDailyBarChart(monthKey, incidents) {
 
     const [yearStr, monthStr] = monthKey.split('-');
@@ -880,8 +893,7 @@ function drawDailyBarChart(monthKey, incidents) {
     const monthName = dateObj.toLocaleDateString('en-US', { month: 'long' });
     const fullDateLabel = dateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     const filteredData = incidents.filter(incident => {
-    const date = new Date(incident.occurredAt);
-    const year = date.getFullYear();
+const date = safeDate(incident.occurredAt); // <--- NEW    const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
         return `${year}-${month}` === monthKey;
     });
@@ -894,8 +906,7 @@ function drawDailyBarChart(monthKey, incidents) {
     }
 
     filteredData.forEach(incident => {
-        const date = new Date(incident.occurredAt);
-        const day = date.getDate();
+const date = safeDate(incident.occurredAt); // <--- NEW        const day = date.getDate();
         dailyCounts[day]++;
     });
 
@@ -1050,8 +1061,7 @@ function loadLineBarChart(incidents) {
         const monthlyCounts = {};
 
         incidents.forEach(incident => {
-            const date = new Date(incident.occurredAt);
-            const year = date.getFullYear(); 
+const date = safeDate(incident.occurredAt); // <--- NEW            const year = date.getFullYear(); 
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const monthKey = `${year}-${month}`; 
 
@@ -1067,8 +1077,8 @@ function loadLineBarChart(incidents) {
         const startKey = availableKeys[0];
         const endKey = availableKeys[availableKeys.length - 1];
 
-        let loopDate = new Date(startKey + "-01");
-        const endDate = new Date(endKey + "-01");
+        let loopDate = new Date(startKey + "/01");
+        const endDate = new Date(endKey + "/01");
         var tt = Object.keys(monthlyCounts).length > 12;
       
         const chartData = [['Month', 'Incidents']];
@@ -1316,8 +1326,7 @@ function toggle(id,display){
 
 
 function prettyDateTimeManual(timestamp,withtime) {
-    const date = new Date(timestamp);
-    
+const date = safeDate(timestamp); // <--- NEW    
     const datePart = date.toLocaleDateString('en-US', { 
         year: 'numeric', month: 'long', day: 'numeric' 
     });
@@ -1561,6 +1570,7 @@ function scrollToTop() {
 
     </body>
 </html>
+
 
 
 
