@@ -873,222 +873,195 @@ No data for now
         
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
+    /**
+     * CRITICAL IOS 12 FIX: Safe Date Parsing
+     * Safari (iOS 12) rejects 'YYYY-MM-DD', insists on 'YYYY/MM/DD'.
+     */
     function safeDate(timestamp) {
-    // If it's already a number (unix timestamp), return it as a Date
-    if (typeof timestamp === 'number') return new Date(timestamp);
-    
-    // If it's a string, fix the format for Safari
-    if (typeof timestamp === 'string') {
-        // Replace dashes with slashes (Safari likes 2025/10/21 better than 2025-10-21)
-        var safeStr = timestamp.replace(/-/g, "/");
-        return new Date(safeStr);
-    }
-    
-    return new Date(timestamp);
-}
-function drawDailyBarChart(monthKey, incidents) {
-
-    const [yearStr, monthStr] = monthKey.split('-');
-    const dateObj = new Date(yearStr, monthStr - 1, 1);
-    const monthName = dateObj.toLocaleDateString('en-US', { month: 'long' });
-    const fullDateLabel = dateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    const filteredData = incidents.filter(incident => {
-const date = safeDate(incident.occurredAt); // <--- NEW    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-        return `${year}-${month}` === monthKey;
-    });
-
-    const daysInMonth = new Date(yearStr, monthStr, 0).getDate();
-    const dailyCounts = {};
-
-    for (let i = 1; i <= daysInMonth; i++) {
-        dailyCounts[i] = 0;
+        if (!timestamp) return new Date();
+        if (typeof timestamp === 'number') return new Date(timestamp);
+        if (typeof timestamp === 'string') {
+            // Replace dashes with slashes for Safari compatibility
+            var safeStr = timestamp.replace(/-/g, "/");
+            return new Date(safeStr);
+        }
+        return new Date(timestamp);
     }
 
-    filteredData.forEach(incident => {
-const date = safeDate(incident.occurredAt); // <--- NEW        const day = date.getDate();
-        dailyCounts[day]++;
-    });
+    function drawDailyBarChart(monthKey, incidents) {
+        if(!monthKey) return;
+        
+        const parts = monthKey.split('-');
+        const yearStr = parts[0];
+        const monthStr = parts[1];
+        
+        const dateObj = new Date(yearStr, monthStr - 1, 1);
+        const monthName = dateObj.toLocaleDateString('en-US', { month: 'long' });
+        const fullDateLabel = dateObj.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        
+        const filteredData = incidents.filter(function(incident) {
+            const date = safeDate(incident.occurredAt); // SAFE
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            return (year + '-' + month) === monthKey;
+        });
 
+        const daysInMonth = new Date(yearStr, monthStr, 0).getDate();
+        const dailyCounts = {};
 
+        for (let i = 1; i <= daysInMonth; i++) {
+            dailyCounts[i] = 0;
+        }
 
-    const dataTable = new google.visualization.DataTable();
-    dataTable.addColumn('string', 'Day');
-    dataTable.addColumn('number', 'Incidents');
+        filteredData.forEach(function(incident) {
+            const date = safeDate(incident.occurredAt); // SAFE
+            const day = date.getDate();
+            dailyCounts[day]++;
+        });
 
+        const dataTable = new google.visualization.DataTable();
+        dataTable.addColumn('string', 'Day');
+        dataTable.addColumn('number', 'Incidents');
 
-    for (let i = 1; i <= daysInMonth; i++) {
-        dataTable.addRow([String(i), dailyCounts[i]]);
-    }
+        for (let i = 1; i <= daysInMonth; i++) {
+            dataTable.addRow([String(i), dailyCounts[i]]);
+        }
 
-    var safeTitle = (typeof title !== 'undefined') ? title : "";
-    var safeLocTitle = (typeof loctitle !== 'undefined') ? loctitle : "";
-    var formatter = new Intl.NumberFormat('en-US');
+        var safeTitle = (typeof title !== 'undefined') ? title : "";
+        var safeLocTitle = (typeof loctitle !== 'undefined') ? loctitle : "";
+        var formatter = new Intl.NumberFormat('en-US');
 
-    const options = {
-        title: `Incidents of ${fullDateLabel} ${safeTitle} ${safeLocTitle} (${formatter.format(filteredData.length)} Reports)`,  
-        legend: { position: 'none' },
-        tooltip: { isHtml: true },
-        hAxis: {
-            title: `Day of ${monthName}`        
-        },
-        vAxis: { title: 'Number of Reports', minValue: 0, format: '0' },
-        colors: ['#e67e22'],
-        animation: { startup: true, duration: 1000, easing: 'out' },
-        chartArea: {width: '100%', height: '100%', top: 50, left: 50, right: 20, bottom: 50},
-    };
-    const chart = new google.visualization.ColumnChart(document.getElementById('barchart'));
-    chart.draw(dataTable, options);
-    google.visualization.events.addListener(chart, 'select', function() {
-            var monthclass =  'month' + fullDateLabel.toLowerCase().substring(0,3);
+        const options = {
+            title: 'Incidents of ' + fullDateLabel + ' ' + safeTitle + ' ' + safeLocTitle + ' (' + formatter.format(filteredData.length) + ' Reports)',  
+            legend: { position: 'none' },
+            tooltip: { isHtml: true },
+            hAxis: { title: 'Day of ' + monthName },
+            vAxis: { title: 'Number of Reports', minValue: 0, format: '0' },
+            colors: ['#e67e22'],
+            animation: { startup: true, duration: 1000, easing: 'out' },
+            chartArea: {width: '85%', height: '70%'},
+        };
+        const chart = new google.visualization.ColumnChart(document.getElementById('barchart'));
+        chart.draw(dataTable, options);
+        
+        google.visualization.events.addListener(chart, 'select', function() {
+            var monthclass = 'month' + fullDateLabel.toLowerCase().substring(0,3);
             scrolltoelement(monthclass);
         }); 
+    }
 
-}
+    const locselect = document.getElementById('location');
+    const customLocGroup = document.getElementById('custom-loc-group');
+    const customLocInput = document.getElementById('location_select');
 
-        const locselect = document.getElementById('location');
-        const customLocGroup = document.getElementById('custom-loc-group');
-        const customLocInput = document.getElementById('location_select');
+    const dateRangeSelect = document.getElementById('daterange');
+    const startDateGroup = document.getElementById('start-date-group');
+    const endDateGroup = document.getElementById('end-date-group');
+    const startDateInput = document.getElementById('startdate');
+    const endDateInput = document.getElementById('enddate');
 
-        const dateRangeSelect = document.getElementById('daterange');
-        const startDateGroup = document.getElementById('start-date-group');
-        const endDateGroup = document.getElementById('end-date-group');
-        const startDateInput = document.getElementById('startdate');
-        const endDateInput = document.getElementById('enddate');
+    locselect.addEventListener('change', function() {
+        if (this.value === 'custom_location') {
+            customLocGroup.classList.remove('hidden');
+            customLocInput.required = true;
+        } else {
+            customLocGroup.classList.add('hidden');
+            customLocInput.required = false;
+            customLocInput.value = '';
+        }
+    });
 
-        locselect.addEventListener('change', function() {
-            if (this.value === 'custom_location') {
-                customLocGroup.classList.remove('hidden');
-                customLocInput.required = true;
-            } else {
-                customLocGroup.classList.add('hidden');
-                customLocInput.required = false;
-                customLocInput.value = '';
-            }
-        });
+    dateRangeSelect.addEventListener('change', function() {
+        if (this.value === 'custom_date') {
+            startDateGroup.classList.remove('hidden');
+            endDateGroup.classList.remove('hidden');
+            startDateInput.required = true;
+            endDateInput.required = true;
+        } else {
+            startDateGroup.classList.add('hidden');
+            endDateGroup.classList.add('hidden');
+            startDateInput.required = false;
+            endDateInput.required = false;
+            startDateInput.value = '';
+            endDateInput.value = '';
+        }
+    });
 
-        dateRangeSelect.addEventListener('change', function() {
-            if (this.value === 'custom_date') {
-                startDateGroup.classList.remove('hidden');
-                endDateGroup.classList.remove('hidden');
-                startDateInput.required = true;
-                endDateInput.required = true;
-            } else {
-                startDateGroup.classList.add('hidden');
-                endDateGroup.classList.add('hidden');
-                startDateInput.required = false;
-                endDateInput.required = false;
-                startDateInput.value = '';
-                endDateInput.value = '';
-            }
-        });
+    const urlParams = new URLSearchParams(window.location.search);
+    const customLocationVal = urlParams.get('location_select');
+    const locationVal = urlParams.get('location');
+    const startDateVal = urlParams.get('startdate');
+    const endDateVal = urlParams.get('enddate');
+    const dateRangeVal = urlParams.get('daterange');
+    const typeVal = urlParams.get('type');
+    
+    const typeinput = document.getElementById('type');
 
+    if (typeVal){ typeinput.value = typeVal; }
+    if (locationVal) { locationSelect = document.getElementById('location'); locationSelect.value = locationVal; }
+    if (customLocationVal && locselect.value === 'custom_location') {
+        customLocInput.value = customLocationVal;
+        customLocGroup.classList.remove('hidden');
+    }
+    if (dateRangeVal) { dateRangeSelect.value = dateRangeVal; }
+    if (startDateVal && endDateVal && dateRangeSelect.value === 'custom_date') {
+        startDateInput.value = startDateVal;
+        endDateInput.value = endDateVal;
+        startDateGroup.classList.remove('hidden');
+        endDateGroup.classList.remove('hidden');
+    }
 
+    function deleteincident(id){
+        var cardincident = document.getElementById(id);
+        if(cardincident){
+            cardincident.className += ' statusdeleted';
+            var btn = cardincident.querySelector('button');
+            if(btn) btn.innerHTML = "DELETED INCIDENT";
+        }
+    }
 
- const locationSelect = document.getElementById('location');
-            
+    function loadLineBarChart(incidents) {
+        if(!incidents || incidents.length === 0) return;
 
-            const urlParams = new URLSearchParams(window.location.search);
-            
-            const customLocationVal = urlParams.get('location_select');
-            const locationVal = urlParams.get('location');
-            const startDateVal = urlParams.get('startdate');
-            const endDateVal = urlParams.get('enddate');
-            const dateRangeVal = urlParams.get('daterange');
-            const type = urlParams.get('type');
-            
-            const typeinput = document.getElementById('type');
-
-            if (type){
-                typeinput.value = type;
-            }
-            if (locationVal) {
-                locationSelect.value = locationVal;
-            }
-            if (customLocationVal && locationSelect.value === 'custom_location') {
-                customLocInput.value = customLocationVal;
-                handleLocationChange();
-            }
-
-            if (dateRangeVal) {
-                dateRangeSelect.value = dateRangeVal;
-            }
-            if (startDateVal && endDateVal && dateRangeSelect.value === 'custom_date') {
-                startDateInput.value = startDateVal;
-                endDateInput.value = endDateVal;
-                handleDateChange();
-            }
-
-
-            function handleLocationChange() {
-                if (locationSelect.value === 'custom_location') {
-                    customLocGroup.classList.remove('hidden');
-                    customLocInput.required = true;
-                } else {
-                    customLocGroup.classList.add('hidden');
-                    customLocInput.required = false;
-                    customLocInput.value = ''; 
-                }
-            }
-
-            function handleDateChange() {
-                if (dateRangeSelect.value === 'custom_date') {
-                    startDateGroup.classList.remove('hidden');
-                    endDateGroup.classList.remove('hidden');
-                    startDateInput.required = true;
-                    endDateInput.required = true;
-                } else {
-                    startDateGroup.classList.add('hidden');
-                    endDateGroup.classList.add('hidden');
-                    startDateInput.required = false;
-                    endDateInput.required = false;
-                    startDateInput.value = '';
-                    endDateInput.value = '';
-                }
-            }
-
-            locationSelect.addEventListener('change', handleLocationChange);
-            dateRangeSelect.addEventListener('change', handleDateChange);
-
-function deleteincident(id){
-    var cardincident = document.getElementById(id);
-    cardincident.style = 'opacity:0.3;border-color:red;animation: flipY 10s linear infinite;';
-    cardincident.querySelector('button').innerHTML = "DELETED INCIDENT";
-}
-
-function loadLineBarChart(incidents) {
-   
         const monthlyCounts = {};
 
-        incidents.forEach(incident => {
-const date = safeDate(incident.occurredAt); // <--- NEW            const year = date.getFullYear(); 
+        incidents.forEach(function(incident) {
+            const date = safeDate(incident.occurredAt); // SAFE
+            const year = date.getFullYear(); 
             const month = String(date.getMonth() + 1).padStart(2, '0');
-            const monthKey = `${year}-${month}`; 
-
-            if (monthlyCounts[monthKey]) {
-                monthlyCounts[monthKey]++;
-            } else {
-                monthlyCounts[monthKey] = 1;
+            const monthKey = year + '-' + month; 
+            
+            // Safety check against invalid dates creating 'NaN-NaN'
+            if (!isNaN(year)) {
+                if (monthlyCounts[monthKey]) {
+                    monthlyCounts[monthKey]++;
+                } else {
+                    monthlyCounts[monthKey] = 1;
+                }
             }
         });
 
-        
         const availableKeys = Object.keys(monthlyCounts).sort();
+        if (availableKeys.length === 0) return;
+        
         const startKey = availableKeys[0];
         const endKey = availableKeys[availableKeys.length - 1];
 
-        let loopDate = new Date(startKey + "/01");
-        const endDate = new Date(endKey + "/01");
+        // Safe Date Parsing for the loop logic
+        let loopDate = new Date(startKey.replace(/-/g, "/") + "/01");
+        const endDate = new Date(endKey.replace(/-/g, "/") + "/01");
+        
         var tt = Object.keys(monthlyCounts).length > 12;
       
         const chartData = [['Month', 'Incidents']];
         const allMonthsFilled = []; 
-        while (loopDate <= endDate) {
-            
+        
+        // Prevent infinite loops if dates are still weird
+        let safetyCounter = 0;
+        while (loopDate <= endDate && safetyCounter < 100) {
             const y = loopDate.getFullYear();
             const m = String(loopDate.getMonth() + 1).padStart(2, '0');
-            const currentKey = `${y}-${m}`;
-
+            const currentKey = y + '-' + m;
             const count = monthlyCounts[currentKey] || 0;
 
             let label = "";
@@ -1099,37 +1072,36 @@ const date = safeDate(incident.occurredAt); // <--- NEW            const year = 
             }
 
             chartData.push([label, count]);
-            
             allMonthsFilled.push(currentKey);
-
             loopDate.setMonth(loopDate.getMonth() + 1);
+            safetyCounter++;
         }
 
         const dataTable = google.visualization.arrayToDataTable(chartData);
 
-        var s = allMonthsFilled[0]; 
-        var [x, y] = s.split('-');
-        var dateObj = new Date(x, y - 1, 1);
-        var yearstart = dateObj.toLocaleDateString('en-US', { year: 'numeric', month:'short' });
+        var sFirst = allMonthsFilled[0]; 
+        var partsFirst = sFirst.split('-');
+        var dateObjStart = new Date(partsFirst[0], partsFirst[1] - 1, 1);
+        var yearstart = dateObjStart.toLocaleDateString('en-US', { year: 'numeric', month:'short' });
 
-        s = allMonthsFilled[allMonthsFilled.length - 1]; 
-        var [x, y] = s.split('-');
-        var dateObj = new Date(x, y - 1, 1);
-        var yearend = dateObj.toLocaleDateString('en-US', { year: 'numeric', month:'short' });
+        var sLast = allMonthsFilled[allMonthsFilled.length - 1]; 
+        var partsLast = sLast.split('-');
+        var dateObjEnd = new Date(partsLast[0], partsLast[1] - 1, 1);
+        var yearend = dateObjEnd.toLocaleDateString('en-US', { year: 'numeric', month:'short' });
 
         var safeTitle = (typeof title !== 'undefined') ? title : "";
         var safeLocTitle = (typeof loctitle !== 'undefined') ? loctitle : "";
         var formatter = new Intl.NumberFormat('en-US');
 
         const options = {
-            title: 'Incident Reports of ' +  yearstart + ' to ' + yearend + " " + safeTitle + " " + safeLocTitle + " (" + formatter.format(incidents.length) + " Reports) ",
+            title: 'Incident Reports ' + yearstart + ' to ' + yearend + " " + safeTitle + " " + safeLocTitle + " (" + formatter.format(incidents.length) + " Reports)",
             legend: { position: 'bottom' },
             tooltip: { isHtml: true },
             hAxis: { title: 'Month' },
             vAxis: { title: 'Number of Reports', minValue: 0 },
             pointSize: 5, 
             colors: ['#4f46e5'], 
-            chartArea: { width: '100%', height: '100%', top:50, left:50, right:20, bottom:45 },
+            chartArea: { width: '85%', height: '70%' },
             backgroundColor: 'transparent',
             animation: { startup: true, duration: 1000, easing: 'out' }
         };
@@ -1137,85 +1109,73 @@ const date = safeDate(incident.occurredAt); // <--- NEW            const year = 
         const chart = new google.visualization.LineChart(document.getElementById('linechart'));
         chart.draw(dataTable, options);
 
-
         drawDailyBarChart(allMonthsFilled[allMonthsFilled.length - 1], incidents);
 
         google.visualization.events.addListener(chart, 'select', function() {
             const selection = chart.getSelection();
-            
             if (selection.length > 0) {
                 const row = selection[0].row;
                 var selectedMonthKey = allMonthsFilled[row]; 
-                
                 drawDailyBarChart(selectedMonthKey, incidents);
-                document.getElementById('barchart').scrollIntoView({'block':'end'});
+                document.getElementById('barchart').scrollIntoView({behavior: 'smooth', block: 'nearest'});
             }
         }); 
+    }
 
-    
-}
-const map = L.map("map").setView([10.3233, 123.9411], 14); 
-map.locate({ setView: true, maxZoom: 14});
-map.on('locationfound', function(e) {
-    L.circleMarker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
-});
-map.on('locationerror', function(e) {
-    console.log("Location access denied or not available.");
-});
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 14,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+    const map = L.map("map").setView([10.3233, 123.9411], 14); 
+    map.locate({ setView: true, maxZoom: 14});
+    map.on('locationfound', function(e) {
+        L.circleMarker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
+    });
+    map.on('locationerror', function(e) {
+        console.log("Location access denied.");
+    });
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 14,
+            attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
 
-function loadMap(incidents) {
-   
-        incidents.forEach(incident => {
-            const dateStr = prettyDateTimeManual(incident.occurredAt) 
-            
+    function loadMap(incidents) {
+        incidents.forEach(function(incident) {
+            const dateStr = prettyDateTimeManual(incident.occurredAt);
             const typeKey = incident.type.toLowerCase().split(' ')[0];
-            const pinClass = `pin-${typeKey}`; 
+            const pinClass = 'pin-' + typeKey; 
 
             const customIcon = L.divIcon({
                 className: '', 
-                html: `<div class="custom-pin ${pinClass}"><i></i></div>`, 
+                html: '<div class="custom-pin '+ pinClass +'"><i></i></div>', 
                 iconSize: [30, 42],
                 iconAnchor: [15, 42], 
                 popupAnchor: [0, -35]
             });
 
+            const safeType = document.createTextNode(incident.type).textContent;
+            const safeAddress = document.createTextNode(incident.address).textContent;
+
             L.marker([incident.latitude, incident.longitude], { icon: customIcon })
              .addTo(map)
-             .bindPopup(`
-                <div style="text-align:center;">
-                    <strong style="color:var(--primaryColor); text-transform:uppercase;">${incident.type}</strong>
-                    <br>
-                    <span style="font-size:0.8em; color:#666;">${dateStr}</span>
-                    <br>
-                    <div style="margin-top:5px; font-size:0.85em;">${incident.address}</div>
-                </div>
-             `);
-             });
+             .bindPopup(
+                '<div style="text-align:center;">' +
+                    '<strong style="color:var(--primaryColor); text-transform:uppercase;">'+ safeType +'</strong>' +
+                    '<br><span style="font-size:0.8em; color:#666;">'+ dateStr +'</span>' +
+                    '<br><div style="margin-top:5px; font-size:0.85em;">'+ safeAddress +'</div>' +
+                '</div>'
+             );
+        });
+    } 
 
-    
-    
-} 
-const typeColors = {
-    'Fire': '#EF4444',       
-    'Assault': '#991B1B',    
-    'Accident': '#F59E0B',   
-    'Theft': '#8B5CF6',      
-    'Flooding': '#3B82F6',   
-    'Harassment': '#EC4899', 
-    'Suspicious': '#6366F1', 
-    'Other': '#9CA3AF',      
-    'Road Damage': '#4B5563',
-    'Waste Management': '#0891B2',
-};
-function loadPieChart(incidents) {
+    const typeColors = {
+        'Fire': '#EF4444', 'Assault': '#991B1B', 'Accident': '#F59E0B',
+        'Theft': '#8B5CF6', 'Flooding': '#3B82F6', 'Harassment': '#EC4899', 
+        'Suspicious': '#6366F1', 'Other': '#9CA3AF', 'Road Damage': '#4B5563',
+        'Waste Management': '#0891B2'
+    };
+
+    function loadPieChart(incidents) {
         const chartData = [['Incident Type', 'Count']];
-
         const typeCounts = {};
-        incidents.forEach(incident => {
+        
+        incidents.forEach(function(incident) {
             const type = incident.type;
             if (typeCounts[type]) {
                 typeCounts[type]++;
@@ -1223,355 +1183,307 @@ function loadPieChart(incidents) {
                 typeCounts[type] = 1;
             }
         });
-        for (const [type, count] of Object.entries(typeCounts)) {
-            chartData.push([type, count]);
+        
+        for (const key in typeCounts) {
+            chartData.push([key, typeCounts[key]]);
         }
         var formatter = new Intl.NumberFormat('en-US');
         drawPieChart(chartData, formatter.format(incidents.length));
     }
 
-
-function drawPieChart(chartDataArray,totalpie) {
-    var data = google.visualization.arrayToDataTable(chartDataArray);
-
-    var options = {
-        title: 'Incidents by Type ' + loctitle + " (" + totalpie + " Reports) ",
-        pieHole: 0.2,
-        slices: {
-          
-        },
-        tooltip: { isHtml: true },
-        chartArea: {
-            width: '100%', 
-            height: '100%',top:30, left:20, right:20},
-        legend: { position: 'right' },
-        backgroundColor: 'transparent'
-    };
-    for (var i = 1; i < chartDataArray.length; i++) {
-    var typeName = chartDataArray[i][0]; 
-    if (typeColors[typeName]) {
-        options.slices[i-1] = { color: typeColors[typeName] };
+    function drawPieChart(chartDataArray, totalpie) {
+        var data = google.visualization.arrayToDataTable(chartDataArray);
+        var options = {
+            title: 'Incidents by Type ' + (typeof loctitle !== 'undefined'?loctitle:'') + " (" + totalpie + " Reports) ",
+            pieHole: 0.2,
+            slices: {},
+            tooltip: { isHtml: true },
+            chartArea: { width: '90%', height: '90%' },
+            legend: { position: 'right' },
+            backgroundColor: 'transparent'
+        };
+        
+        for (var i = 1; i < chartDataArray.length; i++) {
+            var typeName = chartDataArray[i][0]; 
+            if (typeColors[typeName]) {
+                options.slices[i-1] = { color: typeColors[typeName] };
+            }
+        }
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
     }
-}
-    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-    chart.draw(data, options);
-}
 
-function loadReportCards(incidents) {  
+    function loadReportCards(incidents) {  
         const container = document.querySelector('.reports-container');
-       
         container.innerHTML = ''; 
-
-       
         const fragment = document.createDocumentFragment();
         
-        incidents.forEach(incident => {
-            const badgeClass = `type-${incident.type.split(" ")[0].toLowerCase()}`;
-            var dateincident = prettyDateTimeManual(incident.occurredAt);
-            const cardDiv = document.createElement('div');
-         
-            cardDiv.className = 'report-card status' + incident.status.toLowerCase() + ' month' + dateincident.toLowerCase().substring(0,3);
-            cardDiv.id = "incidentid" + incident.incidentID; 
-            var bts = 'Delete Incident';
-            if (incident.status.toLowerCase() == 'deleted') bts = 'DELETED INCIDENT'
+        incidents.forEach(function(incident) {
+            const dateincident = prettyDateTimeManual(incident.occurredAt);
+            const badgeClass = 'type-' + incident.type.split(" ")[0].toLowerCase();
             
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'report-card status' + incident.status.toLowerCase() + ' month' + dateincident.toLowerCase().substring(0,3);
+            cardDiv.id = "incidentid" + incident.incidentID;
+            
+            // Image
+            const imgDiv = document.createElement('div');
+            imgDiv.className = 'card-image';
+            const img = document.createElement('img');
+            img.loading = 'lazy';
+            img.alt = 'Incident';
+            img.src = incident.photo;
+            img.onerror = function() { this.src='https://placehold.co/600x400/eeeeee/999999?text=No+Image'; };
+            const badge = document.createElement('span');
+            badge.className = 'badge ' + badgeClass;
+            badge.textContent = incident.type;
+            imgDiv.appendChild(img);
+            imgDiv.appendChild(badge);
 
-cardDiv.innerHTML = `
-    <div class="card-image">
-        <img src="${incident.photo}" loading="lazy" alt="Incident" 
-             onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/999999?text=No+Image';">
-        <span class="badge ${badgeClass}">${incident.type}</span>
-    </div>
+            // Content
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'card-content';
+            
+            // Meta
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'meta-header';
+            const idSpan = document.createElement('span');
+            idSpan.className = 'incident-id';
+            idSpan.textContent = 'Incident ID: #' + incident.incidentID;
+            const dateSpan = document.createElement('span');
+            dateSpan.className = 'incident-date';
+            dateSpan.textContent = dateincident;
+            metaDiv.appendChild(idSpan);
+            metaDiv.appendChild(dateSpan);
 
-    <div class="card-content">
-        <div class="meta-header">
-            <span class="incident-id">Incident ID: #${incident.incidentID}</span>
-            <span class="incident-date">${dateincident}</span>
-        </div>
+            // Location
+            const locBox = document.createElement('div');
+            locBox.className = 'location-box';
+            const locIcon = document.createElement('span');
+            locIcon.className = 'loc-icon';
+            locIcon.textContent = '📍';
+            const locText = document.createElement('div');
+            locText.className = 'loc-text';
+            const addrDiv = document.createElement('div');
+            addrDiv.className = 'address';
+            addrDiv.textContent = incident.address;
+            const coordDiv = document.createElement('div');
+            coordDiv.className = 'coords';
+            coordDiv.textContent = incident.latitude + ', ' + incident.longitude;
+            locText.appendChild(addrDiv);
+            locText.appendChild(coordDiv);
+            locBox.appendChild(locIcon);
+            locBox.appendChild(locText);
 
-        <div class="location-box">
-            <span class="loc-icon">📍</span>
-            <div class="loc-text">
-                <div class="address">${incident.address}</div>
-                <div class="coords">${incident.latitude}, ${incident.longitude}</div>
-            </div>
-        </div>
+            // Desc
+            const descP = document.createElement('p');
+            descP.className = 'description';
+            descP.textContent = incident.description;
 
-        <p class="description">${incident.description}</p>
+            // Reporter
+            const reportInfo = document.createElement('div');
+            reportInfo.className = 'reporter-info';
+            const profileImg = document.createElement('img');
+            profileImg.className = 'avatar';
+            profileImg.loading = 'lazy';
+            profileImg.src = incident.profilePhoto;
+            profileImg.onerror = function() { this.src='https://placehold.co/40x40/4f46e5/ffffff?text=' + incident.userID; };
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'reporter-name';
+            nameSpan.innerHTML = 'Reported by <strong>' + document.createTextNode(incident.firstName).textContent + '</strong>';
 
-        <div class="reporter-info">
-            <img src="${incident.profilePhoto}" loading="lazy" alt="Profile" class="avatar" 
-                 onerror="this.onerror=null; this.src='https://placehold.co/40x40/4f46e5/ffffff?text=${incident.userID}';">
-            <span class="reporter-name">Reported by <a href='../public/userprofile.html?phonenumber=${incident.phoneNumber}'><strong>${incident.firstName}</strong></a></span>
-        </div>  <button class="deletereport" onclick='deleteincident("incidentid${incident.incidentID}");'>${bts}</button>
-    </div>
-`;
+            reportInfo.appendChild(profileImg);
+            reportInfo.appendChild(nameSpan);
 
+            const delBtn = document.createElement('button');
+            delBtn.className = 'deletereport';
+            delBtn.textContent = (incident.status.toLowerCase() === 'deleted') ? 'DELETED INCIDENT' : 'Delete Incident';
+            delBtn.onclick = function() { deleteincident("incidentid" + incident.incidentID); };
+
+            contentDiv.appendChild(metaDiv);
+            contentDiv.appendChild(locBox);
+            contentDiv.appendChild(descP);
+            contentDiv.appendChild(reportInfo);
+            contentDiv.appendChild(delBtn);
+
+            cardDiv.appendChild(imgDiv);
+            cardDiv.appendChild(contentDiv);
             fragment.appendChild(cardDiv);
         });
 
-      
         container.appendChild(fragment); 
-    
-
-}
-
-function toggle(id,display){
-    var element = document.getElementById(id);
-    if(element.style.display === display){
-        element.style.display = 'none';
     }
-    else{element.style.display = display;}
-}
 
-
-function prettyDateTimeManual(timestamp,withtime) {
-const date = safeDate(timestamp); // <--- NEW    
-    const datePart = date.toLocaleDateString('en-US', { 
-        year: 'numeric', month: 'long', day: 'numeric' 
-    });
-    
-    const timePart = date.toLocaleTimeString('en-US', { 
-        hour: 'numeric', minute: '2-digit', hour12: true 
-    });
-
-    if (withtime) return `${datePart} ${timePart}`; 
-    return datePart;
-}
-
-
-function getDynamicDates() {
-    const now = new Date();
-
-    const formatDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
-
-    const todayStart = new Date(now);
-    const todayEnd = new Date(now);
-    todayEnd.setDate(todayEnd.getDate() + 1);
-
-    const dayOfWeek = now.getDay(); 
-    const thisWeekStart = new Date(now);
-    thisWeekStart.setDate(now.getDate() - dayOfWeek); 
-    
-    const thisWeekEnd = new Date(thisWeekStart);
-    thisWeekEnd.setDate(thisWeekStart.getDate() + 7); 
-    const lastWeekStart = new Date(thisWeekStart);
-    lastWeekStart.setDate(thisWeekStart.getDate() - 7);
-    
-    const lastWeekEnd = new Date(thisWeekStart); 
-
-   
-    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const thisMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-
-    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 1);
-
- 
-    const thisYearStart = new Date(now.getFullYear(), 0, 1);
-    const thisYearEnd = new Date(now.getFullYear() + 1, 0, 1);
-
-    const lastYearStart = new Date(now.getFullYear() - 1, 0, 1);
-    const lastYearEnd = new Date(now.getFullYear(), 0, 1);
-
-    return {
-        "today":      `start_time=${formatDate(todayStart)}&end_time=${formatDate(todayEnd)}`,
-        
-        "thisweek":   `start_time=${formatDate(thisWeekStart)}&end_time=${formatDate(thisWeekEnd)}`,
-        "lastweek":   `start_time=${formatDate(lastWeekStart)}&end_time=${formatDate(lastWeekEnd)}`,
-        
-        "thismonth":  `start_time=${formatDate(thisMonthStart)}&end_time=${formatDate(thisMonthEnd)}`,
-        "lastmonth":  `start_time=${formatDate(lastMonthStart)}&end_time=${formatDate(lastMonthEnd)}`,
-        
-        "thisyear":   `start_time=${formatDate(thisYearStart)}&end_time=${formatDate(thisYearEnd)}`,
-        "lastyear":   `start_time=${formatDate(lastYearStart)}&end_time=${formatDate(lastYearEnd)}`
-    };
-}
-
-function addOneDay(dateStr) {
-    const [year, month, day] = dateStr.split('-').map(Number);
-
-    const date = new Date(year, month - 1, day);
-
-    date.setDate(date.getDate() + 1);
-
-    const newYear = date.getFullYear();
-    const newMonth = String(date.getMonth() + 1).padStart(2, '0');
-    const newDay = String(date.getDate()).padStart(2, '0');
-
-    return `${newYear}-${newMonth}-${newDay}`;
-}
-
-var argsdate = getDynamicDates();
-const baseUrl = '../api/getincidents.php';
-const params = new URLSearchParams({ show: 'true' });
-if (startDateVal && endDateVal) {
-    params.set('start_time', startDateVal);
-    params.set('end_time', addOneDay(endDateVal)); 
-} 
-else if (dateRangeVal === 'alltime') {
-} 
-else if (dateRangeVal && argsdate[dateRangeVal]) {
-    const rangeParams = new URLSearchParams(argsdate[dateRangeVal]);
-    params.set('start_time', rangeParams.get('start_time'));
-    params.set('end_time', rangeParams.get('end_time'));
-} 
-else {
-    const defaultParams = new URLSearchParams(argsdate['thisyear']);
-    params.set('start_time', defaultParams.get('start_time'));
-    params.set('end_time', defaultParams.get('end_time'));
-}
-
-let loctitle = "";
-if (customLocationVal) {
-    params.set('location', customLocationVal);
-    loctitle = `(${customLocationVal.toUpperCase()})`;
-}
-
-let title = "(All Types)";
-if (type && type !== "alltype") {
-    params.set('type', type);
-    title = `(${type.toUpperCase()})`;
-}
-
-const urlapiincident = `${baseUrl}?${params.toString()}`;
-
-const defaultParamsStr = new URLSearchParams({ show: 'true' });
-const defParams = new URLSearchParams(argsdate['thisyear']);
-defaultParamsStr.set('start_time', defParams.get('start_time'));
-defaultParamsStr.set('end_time', defParams.get('end_time'));
-
-const isDefaultState = params.toString() === defaultParamsStr.toString();
-
-if (isDefaultState && window.location.search.length > 0) {
-    window.location.href = window.location.pathname;
-}
-//console.log(urlapiincident);
-
-google.charts.load('current', {'packages':['corechart']});
-function loadIncidents(url){
-    fetch(url)
-    .then(response => response.json())
-    .then(data => {
-        var incidents = Array.isArray(data) ? data : data.incidents;
-        //console.log(incidents.length);
-        
-  
-
-        incidents = incidents.filter(incident => 
-            incident.status && incident.status.toLowerCase() !== 'deleted'
-        );
-
-        google.charts.setOnLoadCallback( () => {
-                loadLineBarChart(incidents); 
-                loadPieChart(incidents) ;
-            }
-            );
-
-        loadReportCards(incidents); 
-        loadMap(incidents,'map');
-
-        chagedatetitle(incidents[incidents.length - 1].occurredAt , incidents[0].occurredAt);
-      
+    function toggle(id,display){
+        var element = document.getElementById(id);
+        if(element.style.display === display){
+            element.style.display = 'none';
         }
-    ) 
-    .catch(error => {console.error(error);
-         const lineContainer = document.getElementById('linechart');
-            lineContainer.innerHTML = `
-                <div style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#999;">
-                    <h4 style="margin:0;">No Trends Available</h4>
-                    <p style="margin:5px 0 0 0; font-size:0.9em;">No reported incidents to show with that criteria.</p>
-                </div>
-            `;
-            const barContainer = document.getElementById('barchart');
-            barContainer.innerHTML = `
-                <div style="height:100%; display:flex; align-items:center; justify-content:center; color:#ccc;">
-                    <p>Select criteria to view daily breakdown</p>
-                </div>
-            `;
-            document.getElementById('piechart').innerHTML = `
-                <div style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#999;">
-                    <h4 style="margin:0;">No Data Available</h4>
-                    <p style="margin:5px 0 0 0; font-size:0.9em;">No reported incidents to show with that criteria.</p>
-                </div>
-            `;
-            
-            return;
-    })
-    .finally(() => {
-        setTimeout(() => {
-            var preloader = document.getElementById('preloader');
-            preloader.classList.add('loaded');
+        else{element.style.display = display;}
+    }
 
-        }, 1000)}
-    )
+    function prettyDateTimeManual(timestamp,withtime) {
+        const date = safeDate(timestamp); // SAFE
+        const datePart = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const timePart = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+        if (withtime) return datePart + " " + timePart; 
+        return datePart;
+    }
 
+    function getDynamicDates() {
+        const now = new Date();
+        const formatDate = function(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return year + '-' + month + '-' + day;
+        };
 
-}
+        const todayStart = new Date(now);
+        const todayEnd = new Date(now);
+        todayEnd.setDate(todayEnd.getDate() + 1);
 
-function chagedatetitle(firstdate, lastdate){
-    document.getElementById('chart-date-label').innerHTML = prettyDateTimeManual(firstdate) + " to " + prettyDateTimeManual(lastdate);
-}
+        const dayOfWeek = now.getDay(); 
+        const thisWeekStart = new Date(now);
+        thisWeekStart.setDate(now.getDate() - dayOfWeek); 
+        
+        const thisWeekEnd = new Date(thisWeekStart);
+        thisWeekEnd.setDate(thisWeekStart.getDate() + 7); 
+        const lastWeekStart = new Date(thisWeekStart);
+        lastWeekStart.setDate(thisWeekStart.getDate() - 7);
+        const lastWeekEnd = new Date(thisWeekStart); 
 
-function scrolltoelement(classname){
-   var elements = document.querySelectorAll('.'+ classname);
-  
-   elements[0].scrollIntoView({ 
-      behavior: 'smooth', 
-      block: 'end' 
-    });
+        const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        const thisMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 1);
+        const thisYearStart = new Date(now.getFullYear(), 0, 1);
+        const thisYearEnd = new Date(now.getFullYear() + 1, 0, 1);
+        const lastYearStart = new Date(now.getFullYear() - 1, 0, 1);
+        const lastYearEnd = new Date(now.getFullYear(), 0, 1);
 
-    elements.forEach(element => {
-      element.classList.remove('highlight-anim');
-      void element.offsetWidth; 
-      element.classList.add('highlight-anim');
-    });
-}
+        return {
+            "today":      "start_time=" + formatDate(todayStart) + "&end_time=" + formatDate(todayEnd),
+            "thisweek":   "start_time=" + formatDate(thisWeekStart) + "&end_time=" + formatDate(thisWeekEnd),
+            "lastweek":   "start_time=" + formatDate(lastWeekStart) + "&end_time=" + formatDate(lastWeekEnd),
+            "thismonth":  "start_time=" + formatDate(thisMonthStart) + "&end_time=" + formatDate(thisMonthEnd),
+            "lastmonth":  "start_time=" + formatDate(lastMonthStart) + "&end_time=" + formatDate(lastMonthEnd),
+            "thisyear":   "start_time=" + formatDate(thisYearStart) + "&end_time=" + formatDate(thisYearEnd),
+            "lastyear":   "start_time=" + formatDate(lastYearStart) + "&end_time=" + formatDate(lastYearEnd)
+        };
+    }
 
+    function addOneDay(dateStr) {
+        const parts = dateStr.split('-');
+        const date = new Date(parts[0], parts[1] - 1, parts[2]);
+        date.setDate(date.getDate() + 1);
+        const newYear = date.getFullYear();
+        const newMonth = String(date.getMonth() + 1).padStart(2, '0');
+        const newDay = String(date.getDate()).padStart(2, '0');
+        return newYear + '-' + newMonth + '-' + newDay;
+    }
 
+    var argsdate = getDynamicDates();
+    const baseUrl = '../api/getincidents.php';
+    const params = new URLSearchParams({ show: 'true' });
 
+    if (startDateVal && endDateVal) {
+        params.set('start_time', startDateVal);
+        params.set('end_time', addOneDay(endDateVal)); 
+    } 
+    else if (dateRangeVal === 'alltime') { } 
+    else if (dateRangeVal && argsdate[dateRangeVal]) {
+        const rangeParams = new URLSearchParams(argsdate[dateRangeVal]);
+        params.set('start_time', rangeParams.get('start_time'));
+        params.set('end_time', rangeParams.get('end_time'));
+    } 
+    else {
+        const defaultParams = new URLSearchParams(argsdate['thisyear']);
+        params.set('start_time', defaultParams.get('start_time'));
+        params.set('end_time', defaultParams.get('end_time'));
+    }
 
+    let loctitle = "";
+    if (customLocationVal) {
+        params.set('location', customLocationVal);
+        loctitle = "(" + customLocationVal.toUpperCase() + ")";
+    }
 
+    let title = "(All Types)";
+    if (typeVal && typeVal !== "alltype") {
+        params.set('type', typeVal);
+        title = "(" + typeVal.toUpperCase() + ")";
+    }
 
-loadIncidents('getincidents.json'); 
+    const urlapiincident = baseUrl + "?" + params.toString();
 
+    google.charts.load('current', {'packages':['corechart']});
+    
+    function loadIncidents(url){
+        fetch('getincidents.json') 
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            var incidents = Array.isArray(data) ? data : data.incidents;
+            incidents = incidents.filter(function(incident) { 
+                return incident.status && incident.status.toLowerCase() !== 'deleted';
+            });
 
+            google.charts.setOnLoadCallback(function() {
+                loadLineBarChart(incidents); 
+                loadPieChart(incidents);
+            });
 
+            loadReportCards(incidents); 
+            loadMap(incidents);
 
-const myButton = document.getElementById("scrollToTopBtn");
+            if(incidents.length > 0) {
+               chagedatetitle(incidents[incidents.length - 1].occurredAt, incidents[0].occurredAt);
+            }
+        }) 
+        .catch(function(error) {
+            console.error(error);
+            document.getElementById('chart-date-label').innerText = "No Data Found";
+        })
+        .finally(function() {
+            setTimeout(function() {
+                var preloader = document.getElementById('preloader');
+                preloader.classList.add('loaded');
+            }, 1000);
+        });
+    }
 
-window.onscroll = function() {
-  scrollFunction();
-};
+    function chagedatetitle(firstdate, lastdate){
+        document.getElementById('chart-date-label').innerHTML = prettyDateTimeManual(firstdate) + " to " + prettyDateTimeManual(lastdate);
+    }
 
-function scrollFunction() {
-  if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
-    myButton.classList.add("showBtn");
-  } else {
-    myButton.classList.remove("showBtn");
-  }
-}
+    function scrolltoelement(classname){
+       var elements = document.querySelectorAll('.'+ classname);
+       if(elements.length > 0){
+           elements[0].scrollIntoView({ behavior: 'smooth', block: 'end' });
+           elements.forEach(function(element) {
+              element.classList.remove('highlight-anim');
+              void element.offsetWidth; 
+              element.classList.add('highlight-anim');
+           });
+       }
+    }
 
-function scrollToTop() {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth' 
-  });
-}
+    loadIncidents(urlapiincident); 
 
+    const myButton = document.getElementById("scrollToTopBtn");
+    window.onscroll = function() { scrollFunction(); };
 
+    function scrollFunction() {
+      if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+        myButton.classList.add("showBtn");
+      } else {
+        myButton.classList.remove("showBtn");
+      }
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 </script>
-   
-
-    </body>
+</body>
 </html>
-
-
-
-
-
