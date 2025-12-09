@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.js?features=default,Array.prototype.at"></script>
         <title>IRAS - Incident Report and Awareness System</title>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
@@ -1468,7 +1467,7 @@ function loadIncidents(url){
         loadReportCards(incidents); 
         loadMap(incidents,'map');
 
-        chagedatetitle(incidents.at(-1).occurredAt , incidents[0].occurredAt);
+        chagedatetitle(incidents[incidents.length - 1].occurredAt , incidents[0].occurredAt);
       
         }
     ) 
@@ -1562,5 +1561,6 @@ function scrollToTop() {
 
     </body>
 </html>
+
 
 
