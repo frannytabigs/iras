@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>IRAS - Incident Report and Awareness System</title>
+        <link rel="stylesheet" type="text/css" href="css/main.css"/>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <meta content='Incident Report and Awareness System' property='og:title' />
+        <meta content='A crowd sourced information of incidents in your area' property='og:description'  />
+        <meta content='/' property='og:url' />
+        <meta property='og:site_name' content='IRAS!'>
+        <meta content='images/branding/logo.png' property='og:image' />
+        <meta content='#2f3136'  name='theme-color'/>
+        <link rel="icon" type="image/x-icon" href="images/branding/logo.png"> 
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=search" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<style>
+    @supports not (--css-vars-supported: 0) {
+  body::before {
+    content: "<h1>Your browser may not fully support all functions required by this website. Please consider upgrading to a modern browser</h1>";
+    display: block;
+    background-color: #ffcccc;
+    color: #cc0000;
+    padding: 10px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 150%;
+    z-index: 9999;
+  }
+}
+</style>
+    </head>
+
+    <body>
+        <noscript>
+  <h1>Your browser does not support JavaScript or it is currently disabled. It does not fully support all functions on this site. Please consider upgrading</h1>
+</noscript>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  if (!CSS.supports('backdrop-filter', 'blur(10px)')) {
+    const message = document.createElement('div');
+    message.innerHTML = '<h1>Your browser does not fully support all functions on this site. Please consider upgrading</h1>';
+    message.style.cssText = 'background-color: #ffcccc; color: #cc0000; padding: 10px; text-align: center; font-family: sans-serif; font-size: 15px;z-index: 9999;';
+    document.body.prepend(message);
+  }     
+});
+(function() {
+    var reasons = [];
+
+    if (!Array.prototype.at) reasons.push("Missing array features");
+    if (!window.fetch) reasons.push("Missing network features");
+    if (!window.Promise) reasons.push("Missing async features");
+
+    if (/iPhone OS ([0-9]|1[0-2])_/.test(navigator.userAgent)) {
+        reasons.push("iOS 12 (Outdated)");
+    }
+
+    if (reasons.length > 0) {
+        var warningDiv = document.createElement('div');
+        warningDiv.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff3cd;
+            color: #856404;
+            text-align: center;
+            padding: 15px 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            border-bottom: 1px solid #ffeeba;
+            z-index: 999999;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        `;
+
+        warningDiv.innerHTML = `
+            <span>
+                <strong>System Warning:</strong> Your browser is outdated. 
+                Some features may not work correctly. PLease consider upgrading.
+                <br>
+                <small style="opacity:0.8">Detected: ${reasons.join(", ")}</small>
+            </span>
+            <button onclick="this.parentElement.style.display='none'" style="
+                background: transparent;
+                border: 1px solid #856404;
+                color: #856404;
+                border-radius: 4px;
+                padding: 5px 10px;
+                margin-left: 15px;
+                cursor: pointer;
+                font-size: 12px;
+            ">Dismiss</button>
+        `;
+
+        document.body.appendChild(warningDiv);
+
+        var header = document.querySelector('header');
+        if(header) header.style.marginTop = "60px";
+
+    
+    }
+})();
+</script>
+
+
+   <div id="preloader">
+        <div class="loader-content">
+            <h2 id="greetuser">Hello User!</h2>
+            <p>Loading dashboard...</p>
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <header class="header">
+        <nav>
+
+        <div class="brand">
+        <svg onclick="toggle('user','none');toggle('menus','flex')" id="menu" class="image" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+        <img class="image" src="images/branding/logo.png">
+        <h1>IRAS</h1>
+        </div>
+
+        <div class="navigation">
+        <a href="index.html">Home</a>
+        <a href="reportForm.html">Report</a>
+        <a>Dashboard</a>
+        <div style="display: flex; align-items: center;">
+
+    <img 
+        class="image user-icon" 
+        alt="Profile"
+        id="profilePhotouser"
+        loading="lazy"
+        onclick="toggle('user','flex');toggle('menus','none')"
+        onerror="this.style.display='none'; document.getElementById('fallback-icon').style.display='block';"
+    >
+
+    <svg 
+        id="fallback-icon" 
+        style="display:none;" 
+        onclick="toggle('user','flex');toggle('menus','none')" 
+        class="image user-icon" 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        stroke-width="2" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+    >
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+    </svg>
+
+</div>
+        </div>
+
+        </nav>
+
+        <div class="user" id="user">
+        <a href="./public/userprofile.html" id="profileme">Profile</a>
+        <a href="../public/log_out.html">Log Out</a>
+        </div>
+
+        <div class="menus" id="menus">
+        <a href="index.html">Home</a>
+        <a href="reportForm.html">Report</a>
+        <a>Dashboard</a>
+        </div>
+    </header> 
+    
+ 
+    <main>
+    <section class="filter">
+    
+
+        <form id="form" enctype="multipart/form-data">
+        
+        <div class="form-group">
+            <label for="location">Location</label>
+            <select name="location" id="location">
+                <option value="all_location">All Locations</option>
+                <option value="custom_location">Custom Location</option>
+            </select>
+        </div>
+
+        <div class="form-group hidden" id="custom-loc-group">
+            <label for="location_select">Enter Location</label>
+            <input type="text" name="location_select" id="location_select" placeholder="City or Street">
+        </div>
+
+        <div class="form-group">
+            <label for="daterange">Date Range</label>
+            <select name="daterange" id="daterange">
+                <option value="thisyear">This Year</option>
+                <option value="alltime">All Time</option>
+                <option value="today">Today</option>
+                <option value="thisweek">This Week</option>
+                <option value="lastweek">Last Week</option>
+                <option value="thismonth">This Month</option>
+                <option value="lastmonth">Last Month</option>
+                <option value="lastyear">Last Year</option>
+                <option value="custom_date">Custom Date</option>
+            </select>
+        </div>
+
+        <div class="form-group hidden" id="start-date-group">
+            <label for="startdate">Start Date</label>
+            <input type="date" name="startdate" id="startdate">
+        </div>
+
+        <div class="form-group hidden" id="end-date-group">
+            <label for="enddate">End Date</label>
+            <input type="date" name="enddate" id="enddate">
+        </div>
+        
+         <div class="form-group">
+            <label for="type">Type</label>
+            <select name="type" id="type">
+                <option value="alltype">All Types</option>
+                <option value="theft">Theft</option>
+                <option value="assault">Assault</option>
+                <option value="fire">Fire</option>
+                <option value="flooding">Flooding</option>
+                <option value="suspicious activity">Suspicious Activity</option>
+                <option value="road damage">Road Damage</option>
+                <option value="harassment">Harassment</option>
+                <option value="waste management">Waste Management</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <input type="submit" value="Apply Filter">
+    </form>
+
+
+
+    </section>
+<div class="mapped">    
+            <section class="map">
+                  <div id="search-overlay" class="search-overlay">
+                    <i class="material-symbols-outlined">search</i>
+                    <input type="text" class="search-input" id="addressSearchMap" placeholder="Search Address">
+                    <ul id="searchResultsMap" class="search-results-list"></ul>
+                </div>
+                <div id="map"></div>
+            </section>
+
+            <div class="charts">
+                <div id="chart-date-label" class="colorrainbow chart-header-date">
+No data for now            
+</div>
+
+                <div class="pieline">
+                    <section class="piechart-wrapper"> 
+                        <div id="piechart" class="chart-scroll-content"></div>
+                    </section>
+                    <section class="linechart-wrapper"> 
+                        <div id="linechart" class="chart-scroll-content"></div>
+                    </section>
+                </div>
+
+                <div class="bar">
+                    <section class="barchart-wrapper"> 
+                        <div id="barchart" class="chart-scroll-content"></div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+       
+        <div class="reports-container">
+
+           <div class="report-card">
+    <div class="card-image">
+        <img src="https://placehold.co/600x400/png?text=Report+Now" loading="lazy" alt="Incident">
+        <span class="badge type-fire">No Incident Recorded</span> 
+    </div>
+
+    <div class="card-content">
+        <div class="meta-header">
+            <span class="incident-id">Incident ID: 0</span>
+            <span class="incident-date">0000 00 0000</span>
+        </div>
+
+        <div class="location-box">
+            <span class="loc-icon">📍</span>
+            <div class="loc-text">
+                <div class="address">000000</div>
+                <div class="coords">000000</div>
+            </div>
+        </div>
+
+        <p class="description">Report an Incident Now!</p>
+
+        <div class="reporter-info">
+            <img class="avatar" src="https://placehold.co/40x40/4f46e5/ffffff?text=U">
+            <span class="reporter-name">Reported by <strong>0</strong></span>
+        </div> 
+        <button class="deletereport">Delete Report</button>
+    </div>
+</div>
+
+        </div>
+    </main>
+<button id="scrollToTopBtn" onclick="scrollToTop()">
+  ↑ Top
+</button>
+    <footer>
+        <p>&copy; 2025 IRAS System. All rights reserved.</p>
+    </footer>
+
+    
+    <script src="js/dashboard.js"></script>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="js/message.js"></script>
+    <script src="js/deleteincident.js"></script>
+    <script src="js/barchart.js"></script>
+    <script src="js/filter.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/linechart.js"></script>
+    <script src="js/piechart.js"></script> 
+    <script src="js/map.js"></script>
+    <script src="js/dashboardsearch.js"></script>
+    <script src="js/app.js"></script>
+
+
+    </body>
+</html>

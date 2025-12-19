@@ -1,0 +1,105 @@
+header {
+    position: sticky; 
+    top: 0;
+    z-index: 100; 
+    font-family: sans-serif;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    background-color: var(--headerColor, #fff); 
+}
+
+nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--headerFontColor);
+    background-color: var(--headerColor);
+    padding:0px 20px 0 20px;
+}
+header .image{
+    width: 45px;
+    height:45px;  
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 50%; 
+    object-fit: cover;
+    cursor: pointer;
+    border: 0;
+    vertical-align: middle;
+}
+.brand, .navigation{
+    display: flex;
+    align-items: center;
+    gap:10px;
+}
+.navigation{
+    gap:50px;
+}
+.user,.menus{
+    display:flex;
+    color:var(--headerFontColor);
+    align-items: center;
+    flex-direction: column;
+    background-color: var(--tertiaryColor);
+    padding: 20px;
+    gap: 6px;
+    text-align: center;
+    display: none;
+    transition: all 1s ease;
+}
+@media (min-width: 700px){
+    #menu,.user,.menus{    
+        display:none;
+    }
+    .user{
+        float:right;
+        border-radius: 8px;
+        margin: 1px 5px;
+        padding:10px;
+        width: 100px;
+        position: absolute;
+        right: 0; 
+    }
+    .user::before {
+        content: ''; 
+        position: absolute;
+        top: -10px; 
+        left: 50%; 
+        transform: translateX(-50%); 
+        border-left: 10px solid transparent; 
+        border-right: 10px solid transparent; 
+        border-bottom: 10px solid var(--tertiaryColor); 
+        transform: scale(3.5);    
+    }
+  
+
+}
+@media (max-width: 700px){
+    nav a{    
+        display:none;
+    }
+}
+.navigation .image{
+    box-shadow: 0 0 0 3px var(--secondaryColor);
+    transition: all 0.2s linear;
+}
+.navigation .image:hover {
+    box-shadow: 0 0 0 6px var(--secondaryColor);
+}
+#menu{
+    transition: all 0.2s linear;
+}
+#menu:hover{
+    background-color:  var(--tertiaryColor);
+    border-radius: 8px;
+}
+
+header a{
+    transition: all 0.3s linear;
+}
+header a:hover{
+   text-decoration-line: underline;
+   text-decoration-color: var(--secondaryColor);
+   transform: scale(1.01);
+}

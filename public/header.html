@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header | IRAS</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <header class="header" style="padding:5px">
+        <nav>
+
+        <div class="brand">
+        <svg onclick="toggle('user','none');toggle('menus','flex')" id="menu" class="image" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+        <img class="profile-icon image" src="images/branding/logo.png">
+        <h1>IRAS</h1>
+        </div>
+
+        <div class="navigation">
+        <a href="index.html">Home</a>
+        <a href="reportForm.html">Report</a>
+        <a href="dashboard.html">Dashboard</a>
+        <div style="display: flex; align-items: center;">
+
+        <img 
+            src="images/profilePhoto/alaudivongola.png" 
+            class="image user-icon" 
+            id="profilePhotouser"
+            alt="Profile"
+            loading="lazy"
+            onclick="toggle('user','flex');toggle('menus','none')"
+            onerror="this.style.display='none'; document.getElementById('fallback-icon').style.display='block';"
+        >
+
+        <svg 
+            id="fallback-icon" 
+            style="display:none;" 
+            onclick="toggle('user','flex');toggle('menus','none')" 
+            class="image user-icon" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            stroke-width="2" 
+            stroke-linecap="round" 
+            stroke-linejoin="round"
+        >
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+
+        </div>
+        </div>
+
+        </nav>
+
+        <div class="user" id="user">
+        <a href="userprofile.html" id="profileme">Profile</a>
+        <a href="log_out.html">Log Out</a>
+        </div>
+
+        <div class="menus" id="menus">
+        <a href="index.html">Home</a>
+        <a href="reportForm.html">Report</a>
+        <a href="dashboard.html">Dashboard</a>
+        </div>
+    </header>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <title>User Profile | IRAS </title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <meta content='Incident Report and Awareness System' property='og:title' />
+        <meta content='A crowd sourced information of incidents in your area' property='og:description'  />
+        <meta content='/' property='og:url' />
+        <meta property='og:site_name' content='IRAS!'>
+        <meta content='images/branding/logo.png' property='og:image' />
+        <meta content='#2f3136'  name='theme-color'/>
+        <link rel="icon" type="image/x-icon" href="images/branding/logo.png"> 
+
+    <link rel="stylesheet" href="css/userprofile.css">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+</head>
+<body> 
+     <header>
+        <div id="main-header"></div>
+    </header>
+    <!-- USER PROFILE INTERFACE (W/ USER DASHBOARD, USER ACCOUNT DETAILS) -->
+    <div class="profile-container">
+        
+        <!-- USER PROFILE HEADER (WITH PROFILE PIC, COLOR BANNER, USER INFORMATION)-->
+        <div class="profile-info"> 
+            <div class="banner" id="banner">
+                <div class="banner-color" id="banner-color">
+                    
+                </div>
+
+                <div class="image-container">
+                    <img 
+                        src="images/profilePhoto/belph.png"
+                        class="profile-image image"
+                        id="profile-image"
+                        alt="Profile Picture"
+                        loading="lazy"
+                        onerror = "this.onerror=null; this.src='https://placehold.co/600x400/png?text=U';"
+                    >
+                </div>
+            </div>
+
+            <div class="info ">
+                <div class="name">
+                    <b>
+                        <p id='fullName'>Full Name</p>
+                    </b>
+                </div>
+
+                <div class="sub-info">
+                    <table>
+                        <tr>
+                            <td>
+                                <p id="phoneNumberLABEL">Phone Number</p>
+                            </td>
+                            <td>
+                                <p id="creation">Date Created</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END OF USER HEADER -->
+     
+    <!-- USER PROFILE NAVIGATION -->
+    <div class="main-container input">
+        <input type="radio" name="menu" id="dashboard" checked>
+        <input type="radio" name="menu" id="account-setting">
+
+        <!-- LEFT SIDE CONTENT -->
+        <div class="left-content">
+            <label for="dashboard">Dashboard</label>
+            <label for="account-setting" id="myaccountonly" style="display:none">Account</label>
+        </div>
+
+        <!-- RIGHT SIDE CONTENT -->
+        <div class="right">
+
+            <!-- DASHBOARD CONTENT -->
+            <div class="right-content content1">
+                <div class="dashboard">
+                    <div class="dash-container">
+                        
+                        <div class="dashboardTitle">
+                            <h1>User Dashboard</h1>
+                            <p>Track your incident reporting metrics and overall contribution impact.</p>
+                        </div>
+
+                        <div class="chart">
+                            <div class="contribution">
+                                <div class="title">
+                                    <h2><b>My Impact</b></h2>
+                                </div>
+                                
+                                <div class="totalReport">
+                                    <div class="number" id="totalNumber">0</div>
+                                </div>
+
+                                <div class="month">
+                                    <p>Total Incident Reports</p>
+                                    <p>Reports This Month: <span id="monthReports">0</span></p>
+                                </div>
+                            </div>
+
+                            <div class="piechart-container">
+                                <div class="piechart" id="piechart">Pie Chart</div>
+                            </div>
+                        </div>
+
+                        <!-- BAR CHART CARD -->
+                        <section class="barchart-section">
+                            <div class="barchart" id="barchart">Bar Chart</div>
+                        </section>
+
+                        <!-- REPORT COMPILATION SECTION -->
+                        <section class="reports-section">
+                            <div class="compilation">
+                                <h3>My Reports</h3>
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Description</th>
+                                                <th>Address</th>
+                                                <th>Category</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="reports-table-body">
+                                            <tr><td colspan="5">Loading incidents...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACCOUNT CONTENT -->
+            <div class="right-content content2">
+                
+                <div class="setting-container">
+
+                    <div class="account-title">
+                        <h1><b>Change Account Information</b></h1>
+                        <p>Update your personal details, credentials, and contact methods.</p>
+                    </div>
+
+                    <form class="form-sections"  enctype="multipart/form-data" id="edituserform">
+
+                        <!-- CHANGE NAME -->
+                        <div class="form">
+                            <h2><b>Change Name</b></h2>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                                <div class="sm:col-span-1">
+                                    <label for="firstName" class="input-label">First Name</label>
+                                    <input type="text" id="firstName" name="firstName" class="minimal-input" placeholder="First Name" required>
+                                </div>
+
+                                <div class="sm:col-span-1">
+                                    <label for="middleName" class="input-label">Middle Name</label>
+                                    <input type="text" name='middleName' id="middleName" class="minimal-input" placeholder="Middle Name">
+                                </div>
+
+                                <div class="sm:col-span-1">
+                                    <label for="lastName" class="input-label">Last Name</label>
+                                    <input type="text" id="lastName" name='lastName' class="minimal-input" placeholder="Last Name" required>
+                                </div>
+
+                                <div class="sm:col-span-1">
+                                    <label for="suffix" class="input-label">Suffix</label>
+                                    <input name='suffix' type="text" id="suffix" class="minimal-input" placeholder="Suffix">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- CHANGE PASSWORD -->
+                        <div class="form">
+                            <h2><b>Change Password</b></h2>
+
+                          
+
+                            <div>
+                                <label for="new-pass" class="input-label newPass">New Password</label>
+                                <input type="password" name="newpass" id="new-pass" class="minimal-input" placeholder="New Password">
+                            </div>
+                        </div>
+
+                        <!-- CHANGE BIRTHDATE -->
+                        <div class="form">
+                            <div class="changeBD">
+                                <h2><b>Change Birthdate</b></h2>
+                                <input type="date" id="birthday" name="birthday" class="minimal-input" required>
+                            </div>
+                        </div>
+
+                        <!-- XHANGE PROFILE PICTURE -->
+                        <div class="form">
+                            <div class="changeProfile">
+                                <h2><b>Change Picture</b></h2>
+                                <div class="flex gap-2">
+                                    <input type="file" name="profilePhoto" id="profilePhoto" class="minimal-input flex-grow" placeholder="Profile Picture" accept="image/*" >    
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CHANGE NUMBER + OTP -->
+                        <div class="form">
+                            <div class="grid sm:grid-cols-2 gap-8">
+
+                                <!-- Change Number -->
+                                <div class="changeNum">
+                                    <h2><b>Change Number</b></h2>
+
+                                    <label for="phoneNumber" class="input-label">Phone Number</label>
+
+                                    <div class="flex gap-2">
+                                        <input type="text" name='phoneNumber' id="phoneNumber" class="minimal-input flex-grow" placeholder="Phone Number" >
+                                        <button type="button" class="otp-button-send" onclick="triggerOtp()">Send OTP</button>
+                                    </div> 
+
+                                </div>
+
+                                <!-- OTP Verification -->
+                                <div>
+                                    <h2><b>OTP Verification</b></h2>
+
+                                    <label for="otp" class="input-label">Enter OTP</label>
+
+                                    <div class="flex gap-2">
+                                        <input type="text" id="otp" name="otpCode" class="minimal-input flex-grow" placeholder="123456" required>
+                                    </div>
+
+                                    <p class="text-sm">Required to verify any changes to your account.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SAVE BUTTON -->
+                        <div class="save-section">
+                            <button type="submit" class="save-button">Save Changes</button>
+                        </div>
+
+                    </form>
+
+                    <!-- DELETE ACCOUNT -->
+                    <div class="delete-account">
+
+                        <h3 class="delete-header">Delete User Account</h3>
+                        <p>Warning! This will permanently delete all your account data.</p>
+                    
+                        <button type="button" class="otp-button-send" onclick="triggerOtpDelete()" id="otpdelete" style="margin-bottom:10px;">Send OTP</button>
+ <div>
+
+                                    <label for="otp" class="input-label">Enter OTP</label>
+
+                                    <div class="flex gap-2">
+                                        <input type="text" id="otpCodeDelete" name="otpCodeDelete" class="minimal-input flex-grow" placeholder="123456" >
+                                    </div>
+
+                                    <p class="text-sm">Required before deleting your account.</p>
+                                </div>                        <button type="button" class="delete-button" onclick="deleteacc()">Delete Account</button>
+                        
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END OF USERPROFILE INTERFACE -->
+
+     <script src="js/edituser.js"></script>
+    <script src="js/piechart.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/message.js"></script>
+    <script src="js/deleteincident.js"></script>
+
+    <script src="js/userprofile.js"></script>
+    <script src="js/header.js"></script>
+
+    <script src="js/deleteaccount.js"></script>
+    <script src="js/dashboard.js"> </script>
+</body> 
+</html>

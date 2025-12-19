@@ -1,0 +1,45 @@
+.custom-pin {
+    width: 20px; 
+    height: 20px;
+    border-radius: 50% 50% 50% 0; 
+    background: #444; 
+    position: absolute;
+    transform: rotate(-45deg); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    border: 2px solid white;
+    transition: transform 0.2s;
+}
+
+.custom-pin:hover {
+    transform: rotate(-45deg) scale(1.1);
+    z-index: 1000 !important;
+}
+
+.custom-pin i {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg); 
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+
+.pin-fire { background: #EF4444; }       
+.pin-assault { background: #991B1B; }    
+.pin-accident { background: #F59E0B; }  
+.pin-theft { background: #8B5CF6; }      
+.pin-flooding { background: #3B82F6; }  
+.pin-vandalism { background: #10B981; }  
+.pin-harassment { background: #EC4899; } 
+.pin-suspicious { background: #6366F1; } 
+.pin-other { background: #9CA3AF; }      
+.pin-road { background: #4B5563; }       
+.pin-stray { background: #B45309; }      
+.pin-waste { background: #0891B2; }      

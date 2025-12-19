@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+        <title>Log Out | IRAS</title>
+        <link rel="stylesheet" type="text/css" href="css/main.css"/>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <meta content='Incident Report and Awareness System' property='og:title' />
+        <meta content='A crowd sourced information of incidents in your area' property='og:description'  />
+        <meta content='/' property='og:url' />
+        <meta property='og:site_name' content='IRAS!'>
+        <meta content='images/branding/logo.png' property='og:image' />
+        <meta content='#2f3136'  name='theme-color'/>
+        <link rel="icon" type="image/x-icon" href="images/branding/logo.png"> 
+</head>
+
+<body>
+   
+    <script src="js/message.js"></script>
+    <script>
+      
+        fetch('../api/loggedin.php?logout=true')
+    .then(response => response.json())
+    .then(data => {
+        const userData = data ?? {'role':'guest'};
+        if (data.status === 'logout') {
+  showSuccessPopup('You are now logged out', '../public/log_in.html');        }
+        
+    }).finally(() => {
+          showSuccessPopup('You are now logged out', '../public/log_in.html');        
+
+    });
+    </script>
+</body>
+</html>

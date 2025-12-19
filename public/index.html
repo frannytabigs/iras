@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <title>Home | IRAS</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="icon" type="image/x-icon" href="images/branding/logo.png"> 
+        <meta content='Incident Report and Awareness System' property='og:title' />
+        <meta content='A crowd sourced information of incidents in your area' property='og:description'  />
+        <meta content='/' property='og:url' />
+        <meta property='og:site_name' content='IRAS!'>
+        <meta content='images/branding/logo.png' property='og:image' />
+        <meta content='#2f3136'  name='theme-color'/>
+    <style>
+   :root {
+    --secondaryColor: #06b6d4;  
+    --accentColor: #f97316;     
+    --headerColor: var(--primaryColor); 
+    --headerFontColor: white;
+    --tertiaryColor: #0f172a;   
+
+    }
+
+       header {
+    position: sticky; 
+    top: 0;
+    z-index: 100; 
+    font-family: sans-serif;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    background-color: var(--headerColor, #fff); 
+    padding:10px;
+   
+}
+header h1{
+    color: white;
+}
+nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--headerFontColor);
+    background-color: var(--headerColor);
+    padding:0px 20px 0 20px;
+}
+.image{
+    width: 45px;
+    height:45px;  
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 50%; 
+    object-fit: cover;
+    cursor: pointer;
+    border: 0;
+    vertical-align: middle;
+}
+.brand, .navigation{
+    display: flex;
+    align-items: center;
+    gap:10px;
+}
+.navigation{
+    gap:50px;
+}
+.user,.menus{
+    display:flex;
+    color:var(--headerFontColor);
+    align-items: center;
+    flex-direction: column;
+    background-color: var(--tertiaryColor);
+    padding: 20px;
+    gap: 6px;
+    text-align: center;
+    display: none;
+    transition: all 1s ease;
+}
+@media (min-width: 700px){
+    #menu,.user,.menus{    
+        display:none;
+    }
+    .user{
+        float:right;
+        border-radius: 8px;
+        margin: 1px 5px;
+        padding:10px;
+        width: 100px;
+        position: absolute;
+        right: 0; 
+    }
+    .user::before {
+        content: ''; 
+        position: absolute;
+        top: -10px; 
+        left: 50%; 
+        transform: translateX(-50%); 
+        border-left: 10px solid transparent; 
+        border-right: 10px solid transparent; 
+        border-bottom: 10px solid var(--tertiaryColor); 
+        transform: scale(3.5);    
+    }
+  
+
+}
+@media (max-width: 700px){
+    nav a{    
+        display:none;
+    }
+}
+.navigation .image{
+    box-shadow: 0 0 0 3px var(--secondaryColor);
+    transition: all 0.2s linear;
+}
+.navigation .image:hover {
+    box-shadow: 0 0 0 6px var(--secondaryColor);
+}
+#menu{
+    transition: all 0.2s linear;
+}
+#menu:hover{
+    background-color:  var(--tertiaryColor);
+    border-radius: 8px;
+}
+
+header a{
+    transition: all 0.3s linear;
+}
+header a:hover{
+   text-decoration-line: underline;
+   text-decoration-color: var(--secondaryColor);
+   transform: scale(1.01);
+}
+
+ * {
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: #fdfdfa;
+            background-size: cover; 
+        }
+
+        .home { 
+            width: 95%;
+            height: auto;
+            font-size: 20px; 
+            text-align: left;
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: space-around;
+            align-items: center;
+            padding: 30px;
+            margin: 0 auto;
+        }
+
+        #home-one{
+            flex: 1 1 50%;
+            min-width: 250px;
+            margin: 10px;
+            padding: 20px;
+        }
+
+        #home-one h2 p {
+            color: #022340; 
+            margin-bottom: 25px;
+            padding: 0;
+        }
+
+        #home-one .gamayng-description {
+            color: #333; 
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-top: 5px;
+            padding: 0;
+        }
+        
+        .join-btn {
+            background-color: #aeb7ef; 
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-top: 30px;
+            display: inline-block;
+            border: none;
+        }
+
+        .join-btn:hover {
+            opacity: 0.85;
+            background-color: #3b5998;
+        }
+
+
+        #u-sec {
+            flex: 1 1 300px;
+            max-width: 350px;
+            height: auto;
+            display: block;
+            margin: 10px;
+        }
+
+        .info {
+            width:95%;
+            height: auto;
+            padding: 30px;
+        }
+
+        .info h1{
+            color: #022340;  
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .info p {
+            color: #333; 
+            padding: 10px;
+           
+        }
+
+        .how-it-works {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .how-it-works h1 p {
+            color: #022340; 
+            padding-bottom: 30px;
+        }
+
+        .steps-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 20px 0;
+        }
+
+        .step {
+            flex: 1 1 300px;
+            margin: 10px;
+            min-width: 250px;
+            background-color: rgb(248, 250, 254); 
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .step h3 {
+            color: #022340;
+            margin-top: 10px;
+            font-size: 1.5rem;
+            padding: 0;
+        }
+
+        .step p {
+            color: #333;
+            margin-top: 10px;
+            font-size: 1rem;
+            padding: 5px; 
+        }
+
+      /*  .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            background-color: #3b5998; 
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        } */
+
+        .step-number {
+            display:flex;  
+            justify-content: center; 
+            align-items: center;    
+            width: 50px;
+            height: 50px;
+            background-color: #3b5998; 
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: 0 auto 15px auto;
+            padding: 0;
+        }
+
+        .developers{
+            padding: 30px;
+            text-align: center;
+        }
+
+        .developer-profiles-grid {
+            display: grid;
+            /* grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(1, 1fr); */
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 25px;
+            justify-items: center;
+            padding: 30px;
+        }
+
+        
+        .developer-profiles-grid > div:hover{
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+/* */
+       .developer-profiles-grid > div {
+            width: 100%;
+            height: 100%;
+            background-color: rgb(248, 250, 254);;
+            border-radius: 8px; 
+        }
+/* */
+        h1{
+            color: #022340;
+        }
+
+        .developers p {
+            color: #022340;
+            padding-bottom: 25px;
+        }
+
+        .profile-pic {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid  #726f6f; 
+            padding: 0;
+            display: block;
+            margin: 10px auto;
+        }
+
+        .profile-pic:hover {
+             border: 4px solid  #06b6d4; 
+        }
+    @media (max-width: 850px) {
+        .home {
+            flex-direction: column; 
+            text-align: center;
+        }
+
+        #u-sec {
+            order: 1;
+            width: 80%;
+            min-width: unset; 
+            margin: 20px auto;
+        }
+
+        #home-one {
+            order: 2;
+            min-width: 95%;
+            padding: 10px; 
+        }
+
+        .info {
+            padding: 20px;
+        }
+
+        .steps-container {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .step {
+            width: 90%;
+            margin-bottom: 20px;
+        }
+       
+    }
+            
+    </style> 
+</head> 
+
+<body>
+    <header class="header" style="padding:5px">
+        <nav>
+
+        <div class="brand">
+        <svg onclick="toggle('user','none');toggle('menus','flex')" id="menu" class="image" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+        <img class="profile-icon image" src="images/branding/logo.png">
+        <h1>IRAS</h1>
+        </div>
+
+        <div class="navigation">
+        <a href="index.html">Home</a>
+        <a href="reportForm.html">Report</a>
+        <a href="dashboard.html">Dashboard</a>
+        <div style="display: flex; align-items: center;">
+
+        <img 
+            src="images/profilePhoto/alaudivongola.png" 
+            class="image user-icon" 
+            id="profilePhotouser"
+            alt="Profile"
+            onclick="toggle('user','flex');toggle('menus','none')"
+            onerror="this.style.display='none'; document.getElementById('fallback-icon').style.display='block';"
+        >
+
+        <svg 
+            id="fallback-icon" 
+            style="display:none;" 
+            onclick="toggle('user','flex');toggle('menus','none')" 
+            class="image user-icon" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            stroke-width="2" 
+            stroke-linecap="round" 
+            stroke-linejoin="round"
+        >
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+
+        </div>
+        </div>
+
+        </nav>
+
+        <div class="user" id="user">
+        <a href="userprofile.html" id="profileme">Profile</a>
+        <a href="log_out.html">Log Out</a>
+        </div>
+
+        <div class="menus" id="menus">
+        <a href="index.html">Home</a>
+        <a href="reportForm.html">Report</a>
+        <a href="dashboard.html">Dashboard</a>
+        </div>
+    </header>
+
+    <main class="page-container">
+    <div class="home">
+            <div id="home-one">
+                <h2><p> WELCOME TO IRAS! </p></h2>
+                <p class="gamayng-description">Become a guardian of your community with IRAS. Report incidents as they happen and explore real-time data analytics to stay informed. Together, we transform scattered reports into actionable insights for a safer environment.</p>       
+                <button class="join-btn" id="joinActionButton" onclick="window.location.href = 'log_in.html'">JOIN NOW</button>
+            </div>
+                <img src="images/branding/logo.png" id="u-sec"> 
+    </div>
+<div class="info">
+    <h1>What is IRAS? </h1>
+    <p>
+        The Incident Report and Awareness System (IRAS) is a crowdsourcing platform designed to document and visualize community incidents—from hazards and accidents to local crimes. By aggregating user reports into an interactive dashboard, IRAS helps citizens identify hotspots and track safety trends over time. Please note: IRAS is a data awareness tool, not a replacement for emergency hotlines.
+    </p>
+</div>
+    
+    <div class="how-it-works">
+        <h1><p>How It Works</p></h1>
+        
+        <div class="steps-container">
+    <div class="step">
+        <div class="step-number">1</div>
+        <h3>Report & Verify</h3>
+        <p>
+            Users securely log in via OTP to submit incidents with precise location pinning, detailed descriptions, and photo evidence.
+        </p>
+        <p>
+            Our system uses Geocoding to automatically convert your map pin into a readable street address for accuracy.
+        </p>
+    </div>
+    
+    <div class="step">
+        <div class="step-number">2</div>
+        <h3>Aggregate & Store</h3>
+        <p>
+            Reports are securely stored in our cloud database, instantly categorizing incidents by type (e.g., Fire, Theft, Road Damage).
+        </p>
+        <p>
+            The system organizes this crowdsourced data to build a historical record of community safety events.
+        </p>
+    </div>
+    
+    <div class="step">
+        <div class="step-number">3</div>
+        <h3>Visualize Trends</h3>
+        <p>
+            Data is instantly visualized on the Analytics Dashboard using interactive Google Charts (Line, Bar, and Pie).
+        </p>
+        <p>
+            Users can view "Danger Zones" (hotspots) on the map and filter data by date or category to make informed decisions.
+        </p>
+    </div>
+</div>
+    </div>
+
+
+    <div class="developers">
+        <h1>Developers: </h1>
+        <div class="developer-profiles-grid">
+            <div class="div">
+                <img src="images/branding/joana.jpg" alt="Profile Picture" class="profile-pic">
+                <p>Bual, Joana Niña</p>
+            </div>
+            <div class="div">
+                <img src="images/branding/papaj.jpg" alt="Profile Picture" class="profile-pic">
+                <p>Lepon, John Karl</p>
+            </div>
+            <div class="div">
+                <img src="images/branding/honeyy.jpg" alt="Profile Picture" class="profile-pic">
+                <p>Quinilog, Honey May</p>
+            </div>
+            <div class="div">
+                <img src="images/branding/diana.jpg" alt="Profile Picture" class="profile-pic">
+                <p>Rosario, Diana Kaye</p>
+            </div>
+            <div class="div">
+                <img src="images/branding/antonio.jpg" alt="Profile Picture" class="profile-pic">
+                <p>Tabigne, John Anthony</p>
+            </div>
+            <div class="div">
+                <img src="images/branding/no.jpg" alt="Profile Picture" class="profile-pic">
+                <p>Tanjay, Lynzel Kline</p>
+            </div>
+        </div>
+    </div>
+    </main>
+
+    <script>
+        function toggle(id, displayState) {
+            var element = document.getElementById(id);
+            if (element.style.display === displayState) {
+                element.style.display = 'none';
+            } else {
+                element.style.display = displayState;
+            }
+        }
+    </script>
+    <script src="js/dashboard.js"></script>
+</body>
+<footer></footer>
+</html>
