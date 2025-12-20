@@ -61,7 +61,13 @@ function getuser(PDO $pdo, $phoneNumber = "", $userID = null): ?array {
 
 function uploadPhoto($file, $upload_dir, $phoneNumber) {
 
-    $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $mime = mime_content_type($file['tmp_name']);
+    $extensions = [
+        'image/jpeg' => 'jpg',
+        'image/png'  => 'png',
+        'image/gif'  => 'gif'
+    ];
+    $fileExtension = $extensions[$mime] ?? 'jpg';
     $newFileName = $phoneNumber . '.' . $fileExtension;
     $destination = $upload_dir . $newFileName;
     $saved = move_uploaded_file($file['tmp_name'], $destination);
@@ -79,6 +85,7 @@ if (isset($_GET["show"])) {
     if ($user) {echo json_encode($user,JSON_PRETTY_PRINT);}
     else {echo json_encode(["message" => "User not found."],JSON_PRETTY_PRINT);}
 }
+
 
 
 
